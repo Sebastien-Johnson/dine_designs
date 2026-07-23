@@ -1,4 +1,7 @@
 <h1>Blog List</h1>
+<form method="get">
+  <button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
+</form>
 {% for post in object_list %}
 <div>
   <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>

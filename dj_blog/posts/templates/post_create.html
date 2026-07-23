@@ -1,0 +1,10 @@
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<h2>Create Recipe</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form }}
+  <button type="submit">Create Recipe</button>
+</form>
+{% endblock %}
