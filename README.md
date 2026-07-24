@@ -1,8 +1,10 @@
 # dine_designs
-Recipe sharing web app that allows for commenting, reviewing, searching and filtering posts.
+Recipe sharing web app that allows for CRUD, commenting, reviewing, searching and filtering posts.
 
 ## Motivation
-Collecting my family's recipes they've been clutching for far too long
+- Having a large family of cooks with few handing down their secrets is a recipe for disaster
+- Collecting the tastes of home they've been clutching for far too long
+- Building an app that feels good to users across a broad age range
 
 ## Features
 - User Authentication: Secure registration and login functionality.
@@ -33,3 +35,6 @@ Collecting my family's recipes they've been clutching for far too long
 - Register or login to accounts 
 - Publish, edit, comment and rate posts
 - Access admin panel: http://localhost:8000/admin/
+
+## Contributing
+- If you'd like to contribute, please fork, clone and test the repository before opening a pull request to the `main` branch.
