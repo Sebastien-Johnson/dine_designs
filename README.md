@@ -16,13 +16,20 @@ Collecting my family's recipes they've been clutching for far too long
 - Admin Dashboard: Manage users and content with Django's admin interface.
 
 
-## Installation & Quick Start
-### Prerequisites
+## Prerequisites
+- Python 3.14+
+- Pip package manager
 
+## Install
+- Clone the Repository
+- Setup version control
+- Install dependencies
+- Run migrations
+- Create an admin
+- Runserver
 
 ## Usage
 - View new posts on home feed
-- Register or login to accounts. Publish or edit your own posts, comment or rate others'.
-- Admin Panel: Access administrative features at http://localhost:8000/admin/
-
-## Contributing
+- Register or login to accounts 
+- Publish, edit, comment and rate posts
+- Access admin panel: http://localhost:8000/admin/
