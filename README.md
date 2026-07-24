@@ -22,7 +22,7 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Python 3.14+
 - Pip package manager
 
-## Install
+## Quick Start
 - Clone the Repository
 - Setup version control
 - Install dependencies
