@@ -8,8 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("log_auth", TemplateView.as_view(template_name="log_auth.html"), name="log_auth"),
     path("", include("posts.urls")),
-    path("", TemplateView.as_view(template_name="home.html"), name="home"),
 ]
 
 if settings.DEBUG:  # new
