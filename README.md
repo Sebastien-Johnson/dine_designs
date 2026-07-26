@@ -26,7 +26,6 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Clone the Repository
 - Setup version control
 - Install dependencies
-- Move into project directory
 - Run migrations
 - Create an admin
 - Runserver
