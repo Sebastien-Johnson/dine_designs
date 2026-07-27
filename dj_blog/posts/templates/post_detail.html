@@ -1,6 +1,7 @@
 <h1>Recipe Instructions</h1>
 <div>
   <h2>{{ object.title }}</h2>
+  <p>Cooked by: {{ object.author }}</p>
   <p>Published: {{ object.published }}</p>
   <img src="{{ object.cover.url }}" alt="{{ object.title }}">
   <p>{{ object.description }}</p>

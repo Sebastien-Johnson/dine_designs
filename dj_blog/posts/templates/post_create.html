@@ -7,8 +7,12 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Create Recipe</button>
+    <button type="submit">Post</button>
   </form>
+  <script>
+    var name = "{{user.id}}";
+    document.getElementById("author_name_field").value = name;
+  </script>
   {% endblock %}
 {% else %}
   <p>Please login to create new recipes</p>

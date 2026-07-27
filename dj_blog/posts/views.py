@@ -1,9 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, request
 from django.shortcuts import render
 from .models import Post
 from .forms import CreatePost
+
 
 
 class PostListView(ListView):
@@ -21,9 +22,15 @@ class PostCreateView(CreateView):
     success_url = reverse_lazy("post_list")
     template_name = "post_create.html"
 
+    def add_author(request):
+        if request.method == 'POST':
+            form = CreatePost(request.POST, request.DATA)
+
+
     def upload_file(request):
         if request.method == 'POST':
             form = CreatePost(request.POST, request.DATA)
+
         if form.is_valid():
             # file is saved
             form.save()

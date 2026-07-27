@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from accounts.models import CustomUser 
 
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None)
@@ -12,6 +13,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title + " | " + str(self.author)
-
-    def get_author(self, request):
-        self.author = request.user
