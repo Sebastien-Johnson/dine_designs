@@ -3,11 +3,11 @@
   {% block title %}Recipe Creation{% endblock %}
 
   {% block content %}
-  <h2>{% if id %} Edit {% else %} Create {% endif %} Recipe</h2>
+  <h2>Edit Recipe</h2>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Post</button>
+      <button type="submit">Save</button>
     </form>
     
     <script>
@@ -19,7 +19,7 @@
     </form>
   {% endblock %}
 {% else %}
-  <p>Please login to create new recipes</p>
+  <p>Please login to edit recipes</p>
   <form method="get">
     <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
   </form>

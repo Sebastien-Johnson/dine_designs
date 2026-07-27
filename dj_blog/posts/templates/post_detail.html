@@ -8,6 +8,11 @@
   {% endif %}
   <p>{{ object.description }}</p>
   <p>{{ object.content }}</p>
+  {% if object.author.id == request.user.id %}
+    <form method="get">
+      <button type="submit", formaction="{% url 'post_edit' post.id %}">Edit Recipe</button>
+    </form>
+  {% endif %}
 </div>
 <form method="get">
   <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
