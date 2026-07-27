@@ -12,6 +12,9 @@
   {% csrf_token %}
   <button type="submit">Log Out</button>
 </form>
+<form method="get">
+  <button type="submit", formaction="{% url 'post_list' %}">Home Feed</button>
+</form>
 {% else %}
 <p>Login or create account</p>
 <form method="get">
@@ -22,6 +25,9 @@
 </form>
 <form method="get">
   <button type="submit", formaction="{% url 'password_reset' %}">Password Reset</button>
+</form>
+<form method="get">
+  <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
 </form>
 {% endif %}
 {% endblock %}

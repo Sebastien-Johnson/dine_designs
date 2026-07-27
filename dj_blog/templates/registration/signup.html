@@ -9,4 +9,7 @@
   {{ form }}
   <button type="submit">Sign Up</button>
 </form>
+<form method="get">
+  <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+</form>
 {% endblock %}

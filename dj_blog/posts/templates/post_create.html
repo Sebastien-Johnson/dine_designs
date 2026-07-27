@@ -13,6 +13,9 @@
     var name = "{{user.id}}";
     document.getElementById("author_name_field").value = name;
   </script>
+  <form method="get">
+  <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+  </form>
   {% endblock %}
 {% else %}
   <p>Please login to create new recipes</p>

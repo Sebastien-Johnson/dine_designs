@@ -1,5 +1,9 @@
-{% if user.authenticated %}
-<p>Logged in as: {{user.username}}</p>
+{% if user.is_authenticated %}
+  <p>User: {{user.username}}</p>
+  <form action="{% url 'logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit">Log Out</button>
+</form>
 {% else %}
   <form method="get">
     <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
