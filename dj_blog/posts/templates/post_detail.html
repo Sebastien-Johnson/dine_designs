@@ -3,7 +3,9 @@
   <h2>{{ object.title }}</h2>
   <p>Cooked by: {{ object.author }}</p>
   <p>Published: {{ object.published }}</p>
-  <img src="{{ object.cover.url }}" alt="{{ object.title }}">
+  {% if object.cover  %}
+    <img src="{{ object.cover.url }}" alt="{{ object.title }}">
+  {% endif %}
   <p>{{ object.description }}</p>
   <p>{{ object.content }}</p>
 </div>
