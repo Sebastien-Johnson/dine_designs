@@ -1,3 +1,10 @@
+{% if user.authenticated %}
+<p>Logged in as: {{user.username}}</p>
+{% else %}
+  <form method="get">
+    <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+  </form>
+{% endif %}
 <h1>Recipe List</h1>
 <form method="get">
   <button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>

@@ -9,6 +9,11 @@
   {{ form }}
   <button type="submit">Log In</button>
 </form>
+<p>New? Sign up</p>
+<form method="get">
+  <button type="submit", formaction="{% url 'signup' %}">Signup</button>
+</form>
+<p>Admins</p>
 <form method="get">
   <button type="submit", formaction="/admin">Admin Portal</button>
 </form>
