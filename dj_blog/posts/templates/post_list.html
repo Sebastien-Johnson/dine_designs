@@ -1,9 +1,13 @@
 {% if user.is_authenticated %}
-  <p>User: {{user.username}}</p>
+  <p>Account: {{user.username}}</p>
+  <form action="{% url 'edit_profile' %}" method="get">
+    {% csrf_token %}
+  <button type="submit">Edit Profile</button>
+  </form>
   <form action="{% url 'logout' %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Log Out</button>
-</form>
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+  </form>
 {% else %}
   <form method="get">
     <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
@@ -13,7 +17,7 @@
 <form method="get">
   <button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
 </form>
-{% for post in object_list %}
+{% for post in object_list  %}
 <div>
   <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
   <p>{{ post.description }}</p>

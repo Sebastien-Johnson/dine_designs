@@ -11,7 +11,7 @@ from .forms import CreatePost
 class PostListView(ListView):
     model = Post
     template_name = "post_list.html"
-
+    ordering = ["-published"]
 
 class PostDetailView(DetailView):
     model = Post
