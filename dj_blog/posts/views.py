@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, request
@@ -41,19 +41,41 @@ class PostCreateView(CreateView):
             form = CreatePost()
         return render(request, 'post_create.html', {'form': form})
 
-def edit_post(request, id):
-    post = get_object_or_404(Post, id=id)
+class PostEditView(UpdateView):
+    model = Post
+    form_class = CreatePost
+    success_url = reverse_lazy("post_list")
+    template_name = "post_edit.html"
 
-    if request.method == 'GET':
-        context = {'form': CreatePost(instance=post), 'id': id}
-        return render(request,'post_edit.html',context)
+    def edit_post(request, pk):
+        post = get_object_or_404(Post, pk=pk)
 
-    elif request.method == 'POST':
-        form = CreatePost(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'The post has been updated successfully.')
-            return redirect('post_list')
-        else:
-            messages.error(request, 'Please correct the following errors:')
-            return render(request,'post_edit.html',{'form':form})
+        if request.method == 'GET':
+            context = {'form': CreatePost(instance=post), 'pk': pk}
+            return render(request,'post_edit.html', context)
+
+        elif request.method == 'POST':
+            form = CreatePost(request.POST, instance=post)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'The post has been updated successfully.')
+                return redirect('post_list')
+            else:
+                messages.error(request, 'Please correct the following errors:')
+                return render(request,'post_edit.html',{'form':form})
+
+class PostDeleteView(DeleteView):
+    model = Post
+    success_url = reverse_lazy("post_list")
+    template_name = "post_confirm_delete.html"
+
+    def delete_post(request, id):
+        post = get_object_or_404(Post, pk=id)
+        context = {"post":post}
+
+        if request.method == 'GET':
+            return render(request, 'post_confirm_delete.html', context)
+        elif request.method == 'POST':
+            post.delete()
+            messages.success(request, 'The post has been deleted successfully.')
+            return redirect("post_list")

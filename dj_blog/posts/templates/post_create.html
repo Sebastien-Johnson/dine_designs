@@ -3,17 +3,18 @@
   {% block title %}Recipe Creation{% endblock %}
 
   {% block content %}
-  <h2>{% if id %} Edit {% else %} Create {% endif %} Recipe</h2>
+  <h2>Create Recipe</h2>
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Post</button>
     </form>
-    
+
     <script>
       var name = "{{user.id}}";
       document.getElementById("author_name_field").value = name;
     </script>
+    
     <form method="get">
     <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
     </form>

@@ -1,0 +1,15 @@
+
+
+{% block content %}
+<h2>Delete Post</h2>
+
+<form method="POST">
+  {% csrf_token %}
+  <p>Are you sure that you want to delete the post "{{post.title}}"?</p>
+  <div>
+    <button type="submit", formaction="{% url 'post_confirm_delete' post.pk %}">Delete Recipe</button>
+    <a href="{% url 'post_detail' post.pk %}">Cancel</a>
+  </div>
+</form>
+
+{% endblock content %}
