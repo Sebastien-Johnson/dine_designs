@@ -19,14 +19,8 @@
 <p>Login or create account</p>
 <form method="get">
   <button type="submit", formaction="{% url 'login' %}">Log in</button>
-</form>
-<form method="get">
   <button type="submit", formaction="{% url 'signup' %}">Signup</button>
-</form>
-<form method="get">
   <button type="submit", formaction="{% url 'password_reset' %}">Password Reset</button>
-</form>
-<form method="get">
   <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
 </form>
 {% endif %}

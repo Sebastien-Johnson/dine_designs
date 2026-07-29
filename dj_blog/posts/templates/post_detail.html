@@ -1,14 +1,25 @@
+{% load static %}
 <h1>Recipe Instructions</h1>
 <div>
-  <h2>{{ object.title }}</h2>
-  <p>Cooked by: {{ object.author }}</p>
-  <p>Published: {{ object.published }}</p>
-  {% if object.cover  %}
-    <img src="{{ object.cover.url }}" alt="{{ object.title }}">
+  <h2>{{ post.title }}</h2>
+  <p class="small text-muted">Chef: {{ post.author }}
+    {% if post.author.profile %}
+      <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
+    {% endif %}
+    {% if post.author.profile.profile_pic %}
+      <img src="{{ post.author.profile.profile_pic.url }}" width=100 height=100>
+    {% else %}
+      <img src="{% static 'dj_blog/images/default_profile_pic.png' %}" width=100 height=100>
+    {% endif %}
+  </p>
+  <p>Published: {{ post.published }}</p>
+  {% if post.cover  %}
+    <img src="{{ post.cover.url }}" alt="{{ post.title }}">
   {% endif %}
-  <p>{{ object.description }}</p>
-  <p>{{ object.content }}</p>
-  {% if object.author.id == request.user.id%}
+  <p>Description: {{ post.description }}</p>
+  <p>Recipe: {{ post.content }}</p>
+ 
+  {% if post.author.id == request.user.id%}
     <form method="get">
       <button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
     </form>

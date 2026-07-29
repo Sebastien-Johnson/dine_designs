@@ -5,7 +5,7 @@ from accounts.models import CustomUser
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None)
+    author = models.ForeignKey(CustomUser, related_name="posts", on_delete=models.CASCADE, default=None)
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
     description = models.CharField(max_length=100)
     content = models.TextField()
