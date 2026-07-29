@@ -10,11 +10,11 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - User Authentication: Secure registration and login functionality.
 - CRUD Operations: Create, read, update, and delete blog posts.
 - Admin Dashboard: Manage users and content with Django's admin interface.
+- User profiles
 
 ## Upcoming
 - Commenting System: Engage readers through comments on posts
 - Rating system: Rate other's (not your own) recipes
-- User profiles
 - Food stats: Pull ingredient stats from database and auto-include 
 - Responsive Design: Mobile-friendly layout for better accessibility
 - Scheduled posting
