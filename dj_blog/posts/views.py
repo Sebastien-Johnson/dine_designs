@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, request
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post
-from .forms import CreatePost
+from .models import Post, Comment
+from .forms import CreatePost, AddComment
 
 
 
@@ -79,3 +79,14 @@ class PostDeleteView(DeleteView):
             post.delete()
             messages.success(request, 'The post has been deleted successfully.')
             return redirect("post_list")
+
+class AddCommentView(CreateView):
+    model = Comment
+    form_class = AddComment
+    template_name = "add_comment.html"
+    success_url = reverse_lazy("post_list")
+
+    def form_valid(self, form):
+        form.instance.post_id = self.kwargs["pk"]
+        form.instance.name = self.request.user
+        return super().form_valid(form)

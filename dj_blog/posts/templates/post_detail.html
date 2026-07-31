@@ -24,7 +24,26 @@
       <button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
     </form>
   {% endif %}
+  <form method="get">
+    <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+  </form>
+  <h2>Comments...</h2>
+  <form method="get">
+    <button type="submit", formaction="{% url 'add_comment' post.pk %}">Add Comment</button>
+  </form>
+  {% if not post.comments.all %}
+    <p>No comments yet</p>
+  {% else %}
+    {% for comment in post.comments.all %}
+      <div>
+        <strong>
+        {{ comment.name }} - 
+        {{ comment.created_on }} - 
+        </strong>
+        
+        <br/>
+        {{ comment.body }} 
+      </div>
+    {% endfor %}
+  {% endif %}
 </div>
-<form method="get">
-  <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-</form>

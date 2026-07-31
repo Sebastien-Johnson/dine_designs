@@ -14,16 +14,16 @@ class Post(models.Model):
     def __str__(self):
         return self.title + " | " + str(self.author)
 
-# class Comment(models.Model):
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None, related_name="comments")
-#     name = user.name
-#     body = models.TextField()
-#     created_on = models.DateTimeField(auto_now_add=True)
-#     active = models.BooleanField(default=False)
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    name = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None, related_name="comments")
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
 
-#     class Meta:
-#         ordering = ["created_on"]
+   
 
-#     def __str__(self):
-#         return f"{self.post.title} by {self.name}" 
+    class Meta:
+        ordering = ["created_on"]
+
+    def __str__(self):
+        return f"{self.post.title} by {self.name}" 

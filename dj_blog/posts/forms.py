@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Comment
 
 class CreatePost(forms.ModelForm):
     class Meta:
@@ -8,4 +8,15 @@ class CreatePost(forms.ModelForm):
 
         widgets = {
             'author': forms.TextInput(attrs={'class':'form-control', 'value':'', 'id':'author_name_field', 'type':'hidden'}),
+        }
+
+
+class AddComment(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("body",)
+
+        widgets = {
+            #'name': forms.TextInput(attrs={"class": "form-control"}),
+            'body': forms.Textarea(attrs={"class": "form-control"}),
         }
