@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
@@ -22,4 +22,5 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.user)
 
-    
+    def get_absolute_url(self):
+        return reverse("post_list")

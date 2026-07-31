@@ -4,6 +4,15 @@
     {% csrf_token %}
   <button type="submit">Edit Account</button>
   </form>
+  {% if user.profile %}
+      <form method="get">
+          <button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
+      </form>
+  {% else %}
+      <form method="get">
+          <button type="submit", formaction="{% url 'create_user_profile_page' %}">Create Profile</button>
+      </form>
+  {% endif %}
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
     <button type="submit">Log Out</button>
@@ -13,7 +22,7 @@
     <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
   </form>
 {% endif %}
-<h1>Recipe List</h1>
+<h1>Recent Recipes</h1>
 <form method="get">
   <button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
 </form>

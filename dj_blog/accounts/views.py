@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm, ProfilePageForm
 from .models import Profile
 
 
@@ -45,3 +45,13 @@ class EditProfilePageView(UpdateView):
     template_name = "registration/edit_profile_page.html"
     success_url = reverse_lazy("post_list")
     fields = ["bio", "profile_pic", "website_url", "bookface_url", "litter_url", "denturest_url", "delaypound_url"]
+
+class CreateUserProfilePageView(CreateView):
+    model = Profile
+    form_class = ProfilePageForm
+    template_name = "registration/create_user_profile_page.html"
+
+    def form_valid(self, form):
+        #sets 'user' for current form creation to that form's 'user'
+        form.instance.user = self.request.user
+        return super().form_valid(form)
