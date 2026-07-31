@@ -1,8 +1,8 @@
 {% if user.is_authenticated %}
   <p>Account: {{user.username}}</p>
-  <form action="{% url 'edit_profile' %}" method="get">
+  <form action="{% url 'edit_account' %}" method="get">
     {% csrf_token %}
-  <button type="submit">Edit Profile</button>
+  <button type="submit">Edit Account</button>
   </form>
   <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}

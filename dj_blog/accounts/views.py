@@ -12,10 +12,10 @@ class SignUpView(CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-class EditProfileView(UpdateView):
+class EditAccountView(UpdateView):
     form_class = CustomUserChangeForm
     success_url = reverse_lazy("post_list")
-    template_name = "registration/edit_profile.html"
+    template_name = "registration/edit_account.html"
 
     def get_object(self):
         return self.request.user
@@ -39,3 +39,9 @@ class ShowProfilePageView(DetailView):
 
         context["page_user"] = page_user
         return context
+    
+class EditProfilePageView(UpdateView):
+    model = Profile
+    template_name = "registration/edit_profile_page.html"
+    success_url = reverse_lazy("post_list")
+    fields = ["bio", "profile_pic", "website_url", "bookface_url", "litter_url", "denturest_url", "delaypound_url"]

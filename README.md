@@ -16,7 +16,7 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Commenting System: Engage readers through comments on posts
 - Rating system: Rate other's (not your own) recipes
 - Food stats: Pull ingredient stats from database and auto-include 
-- Responsive Design: Mobile-friendly layout for better accessibility
+- Adaptive Design: Mobile-friendly layout for better accessibility
 - Scheduled posting
 - Post Categorization: Organize posts using categories or tags
 

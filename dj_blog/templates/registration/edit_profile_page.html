@@ -1,0 +1,22 @@
+{% if request.user.is_authenticated %}
+    {% if profile.user.id == request.user.id%}
+        {% block title %}Edit Profile{% endblock %}
+
+        {% block content %}
+        <h1>Edit Profile</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-secondary">Update Profile Page</button>
+        </form>
+        <form method="get">
+            <button type="submit", formaction="{% url 'show_profile_page' profile.id %}">Return to Profile</button>
+        </form>
+        {% endblock %}
+    {% endif %}
+{% else %}
+    <p>Please login to edit your profile</p>
+    <form method="get">
+        <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+    </form>
+{% endif %}
