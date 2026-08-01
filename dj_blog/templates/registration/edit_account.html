@@ -1,9 +1,9 @@
 {% extends "base.html" %}
+
+{% block title %}Edit Account{% endblock %}
+
+{% block content %}
 {% if object.author.id == request.user.id%}
-    {% block title %}Edit Account{% endblock %}
-    {% block content %}
-
-
     <h1>Edit account...</h1>
     <div class="form-group">
         <form method="post">
@@ -24,10 +24,10 @@
             <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
         </form>
     </div>
-    {% endblock %}
 {% else %}
     <h2>Only account owners can edit their pages!</h2>
     <form method="get">
         <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
     </form>
 {% endif %}
+{% endblock %}

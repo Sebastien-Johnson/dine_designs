@@ -10,9 +10,9 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey(CustomUser, related_name="posts", on_delete=models.CASCADE, default=None)
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
-    description = models.CharField(max_length=100)
-    content = models.TextField()
-    published = models.DateTimeField(default=datetime.now())
+    ingredients = models.TextField(max_length=200)
+    instructions = models.TextField()
+    published = models.DateTimeField(default=f"{datetime.today().day}/{datetime.today().month}/{datetime.today().year}")
     ratings = models.ManyToManyField(CustomUser, through="Rating", through_fields=("post", "user"))
     
 

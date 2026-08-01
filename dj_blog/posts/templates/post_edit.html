@@ -1,8 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Recipe{% endblock %}
+
+{% block content %}
 <div>
 	{% if request.user.is_authenticated and request.user == post.author %}
-		{% block title %}Recipe Creation{% endblock %}
-
-		{% block content %}
 		<h2>Edit Recipe</h2>
 			<form method="post" enctype="multipart/form-data">
 				{% csrf_token %}
@@ -23,7 +25,6 @@
 			<form method="get">
 				<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
 			</form>
-		{% endblock %}
 	{% elif request.user.is_authenticated %}
 		<h2>Only post owners can edit!</h2>
 		<form method="get">
@@ -36,3 +37,4 @@
 		</form>
   	{% endif %}
 </div>
+{% endblock %}

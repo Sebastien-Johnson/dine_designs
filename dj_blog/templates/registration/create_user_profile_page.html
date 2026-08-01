@@ -1,17 +1,19 @@
-{% if request.user.is_authenticated %}
-	{% block title %}Create a new profile page{% endblock %}
+{% extends "base.html" %}
 
-	{% block content %}
+{% block title %}Create a new profile page{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
 	<h2>Create Profile Page</h2>
 		<form method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit">Create Profile Page</button>
 		</form>
-	{% endblock %}
 {% else %}
 	<p>Please login with account to create a profile page!</p>
 	<form method="get">
 		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
 	</form>
 {% endif %}
+{% endblock %}

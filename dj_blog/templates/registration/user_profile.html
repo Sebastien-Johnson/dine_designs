@@ -1,4 +1,8 @@
+{% extends "base.html" %}
 {% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
 {% block content %}
 <h1>User Profile</h1>
 {{ page_user }}
@@ -25,7 +29,7 @@
 {% endif %}
 {% if page_user.user.id == request.user.id %}
 	<form method="get">
-	<button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
+		<button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
 	</form>
 {% endif %}
 <p>About me: {{ page_user.bio }}</p>
@@ -39,5 +43,4 @@
 <form method="get">
 	<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
 </form>
-
 {% endblock %}

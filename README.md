@@ -14,11 +14,6 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Commenting System: Engage readers through comments on posts
 - Rating system: Rate other's recipes
 
-## Upcoming
-- Food stats: Pull ingredient stats from database and auto-include 
-- Adaptive Design: Mobile-friendly layout 
-- Scheduled posting
-- Post Categorization: Organize posts using categories or tags
 
 ## Prerequisites
 - Python 3.14+

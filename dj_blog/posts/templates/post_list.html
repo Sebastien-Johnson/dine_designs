@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Recipe Feed{% endblock %}
+
+{% block content %}
 {% if user.is_authenticated %}
 	<p>Account: {{user.username}}</p>
 	<form action="{% url 'edit_account' %}" method="get">
@@ -29,6 +34,6 @@
 {% for post in object_list  %}
 	<div>
 		<h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
-		<p>{{ post.description }}</p>
 	</div>
 {% endfor %}
+{% endblock %}

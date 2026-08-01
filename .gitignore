@@ -221,4 +221,4 @@ __marimo__/
 images/
 !images/.gitkeep
 
-!static/
+!static
