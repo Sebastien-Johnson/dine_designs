@@ -1,0 +1,12 @@
+{% if request.user.is_authenticated %}
+
+  {% block title %}Recipe Rating{% endblock %}
+  {% if request.user.is_authenticated %}
+    <h2>Rate Recipe</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit Rating</button>
+        </form>
+  {% endif %}  
+{% endif %}

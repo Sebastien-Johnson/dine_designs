@@ -18,12 +18,20 @@
   {% endif %}
   <p>Description: {{ post.description }}</p>
   <p>Recipe: {{ post.content }}</p>
- 
+  <p>Rating: {{ post.get_rating }}/5.0 ☆</p>
   {% if post.author.id == request.user.id%}
     <form method="get">
       <button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
     </form>
   {% endif %}
+
+  {% if request.user not in post.match_reviewer %}
+    <form method="get">
+      <button type="submit", formaction="{% url 'post_rating' post.pk %}">Rate Recipe</button>
+    </form>
+  {% endif %}
+  
+  
   <form method="get">
     <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
   </form>

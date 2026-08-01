@@ -1,13 +1,12 @@
 from django import forms
-from .models import Post, Comment
-
+from .models import Post, Comment, Rating
 class CreatePost(forms.ModelForm):
     class Meta:
         model = Post
         fields = ("title", "author", "published", "cover", "description", "content")
 
         widgets = {
-            'author': forms.TextInput(attrs={'class':'form-control', 'value':'', 'id':'author_name_field', 'type':'hidden'}),
+            "author": forms.TextInput(attrs={"class":"form-control", "value":"", "id":"author_name_field", "type":"hidden"}),
         }
 
 
@@ -17,6 +16,14 @@ class AddComment(forms.ModelForm):
         fields = ("body",)
 
         widgets = {
-            #'name': forms.TextInput(attrs={"class": "form-control"}),
-            'body': forms.Textarea(attrs={"class": "form-control"}),
+            "body": forms.Textarea(attrs={"class": "form-control"}),
+        }
+
+class AddRating(forms.ModelForm):
+     class Meta:
+        model = Rating
+        fields = ("score",)
+
+        widgets = {
+            "score": forms.NumberInput(attrs={'class': 'form-control'}),
         }
