@@ -4,24 +4,24 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<p>Welcome to Dine Designs, {{ user.username }}!</p>
-<form method="get">
-  <button type="submit", formaction="{% url 'password_change' %}">Password Change</button>
-</form>
-<form action="{% url 'logout' %}" method="post">
-  {% csrf_token %}
-  <button type="submit">Log Out</button>
-</form>
-<form method="get">
-  <button type="submit", formaction="{% url 'post_list' %}">Home Feed</button>
-</form>
+	<p>Welcome to Dine Designs, {{ user.username }}!</p>
+	<form method="get">
+		<button type="submit", formaction="{% url 'password_change' %}">Password Change</button>
+	</form>
+	<form action="{% url 'logout' %}" method="post">
+		{% csrf_token %}
+		<button type="submit">Log Out</button>
+	</form>
+	<form method="get">
+		<button type="submit", formaction="{% url 'post_list' %}">Home Feed</button>
+	</form>
 {% else %}
-<p>Login or create account</p>
-<form method="get">
-  <button type="submit", formaction="{% url 'login' %}">Log in</button>
-  <button type="submit", formaction="{% url 'signup' %}">Signup</button>
-  <button type="submit", formaction="{% url 'password_reset' %}">Password Reset</button>
-  <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-</form>
+	<p>Login or create account</p>
+	<form method="get">
+		<button type="submit", formaction="{% url 'login' %}">Log in</button>
+		<button type="submit", formaction="{% url 'signup' %}">Signup</button>
+		<button type="submit", formaction="{% url 'password_reset' %}">Password Reset</button>
+		<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+	</form>
 {% endif %}
 {% endblock %}

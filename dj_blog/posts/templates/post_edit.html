@@ -1,38 +1,38 @@
 <div>
-  {% if request.user.is_authenticated and request.user == post.author %}
-      {% block title %}Recipe Creation{% endblock %}
+	{% if request.user.is_authenticated and request.user == post.author %}
+		{% block title %}Recipe Creation{% endblock %}
 
-      {% block content %}
-      <h2>Edit Recipe</h2>
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit">Save</button>
-        </form>
-        
-        <form method="get">
-          {% csrf_token %}
-          <button type="submit", formaction="{% url 'post_confirm_delete' post.pk %}">Delete Recipe</button>
-        </form>
+		{% block content %}
+		<h2>Edit Recipe</h2>
+			<form method="post" enctype="multipart/form-data">
+				{% csrf_token %}
+				{{ form.as_p }}
+				<button type="submit">Save</button>
+			</form>
+			
+			<form method="get">
+				{% csrf_token %}
+				<button type="submit", formaction="{% url 'post_confirm_delete' post.pk %}">Delete Recipe</button>
+			</form>
 
-        <script>
-          var name = "{{user.id}}";
-          document.getElementById("author_name_field").value = name;
-        </script>
+			<script>
+				var name = "{{user.id}}";
+				document.getElementById("author_name_field").value = name;
+			</script>
 
-        <form method="get">
-          <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-        </form>
-      {% endblock %}
-  {% elif request.user.is_authenticated %}
-      <h2>Only post owners can edit!</h2>
-      <form method="get">
-        <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-      </form>
-  {% else %}
-      <p>Please login to edit recipes</p>
-      <form method="get">
-        <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-      </form>
-  {% endif %}
+			<form method="get">
+				<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+			</form>
+		{% endblock %}
+	{% elif request.user.is_authenticated %}
+		<h2>Only post owners can edit!</h2>
+		<form method="get">
+			<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+		</form>
+  	{% else %}
+		<p>Please login to edit recipes</p>
+		<form method="get">
+			<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+		</form>
+  	{% endif %}
 </div>

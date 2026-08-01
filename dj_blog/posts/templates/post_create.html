@@ -1,27 +1,27 @@
 {% if request.user.is_authenticated %}
 
-  {% block title %}Recipe Creation{% endblock %}
+  	{% block title %}Recipe Creation{% endblock %}
 
-  {% block content %}
-  <h2>Create Recipe</h2>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Post</button>
-    </form>
+  	{% block content %}
+  	<h2>Create Recipe</h2>
+    	<form method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit">Post</button>
+    	</form>
 
     <script>
-      var name = "{{user.id}}";
-      document.getElementById("author_name_field").value = name;
+		var name = "{{user.id}}";
+		document.getElementById("author_name_field").value = name;
     </script>
     
     <form method="get">
-    <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+    	<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
     </form>
-  {% endblock %}
+  	{% endblock %}
 {% else %}
-  <p>Please login to create new recipes</p>
-  <form method="get">
-    <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-  </form>
+	<p>Please login to create new recipes</p>
+	<form method="get">
+		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+	</form>
 {% endif %}

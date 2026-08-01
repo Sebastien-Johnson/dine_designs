@@ -1,34 +1,34 @@
 {% if user.is_authenticated %}
-  <p>Account: {{user.username}}</p>
-  <form action="{% url 'edit_account' %}" method="get">
-    {% csrf_token %}
-  <button type="submit">Edit Account</button>
-  </form>
-  {% if user.profile %}
-      <form method="get">
-          <button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
-      </form>
-  {% else %}
-      <form method="get">
-          <button type="submit", formaction="{% url 'create_user_profile_page' %}">Create Profile</button>
-      </form>
-  {% endif %}
-  <form action="{% url 'logout' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Log Out</button>
-  </form>
+	<p>Account: {{user.username}}</p>
+	<form action="{% url 'edit_account' %}" method="get">
+		{% csrf_token %}
+	<button type="submit">Edit Account</button>
+	</form>
+	{% if user.profile %}
+		<form method="get">
+			<button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
+		</form>
+	{% else %}
+		<form method="get">
+			<button type="submit", formaction="{% url 'create_user_profile_page' %}">Create Profile</button>
+		</form>
+	{% endif %}
+	<form action="{% url 'logout' %}" method="post">
+		{% csrf_token %}
+		<button type="submit">Log Out</button>
+	</form>
 {% else %}
-  <form method="get">
-    <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-  </form>
+	<form method="get">
+		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+	</form>
 {% endif %}
-<h1>Recent Recipes</h1>
-<form method="get">
-  <button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
-</form>
+	<h1>Recent Recipes</h1>
+	<form method="get">
+		<button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
+	</form>
 {% for post in object_list  %}
-<div>
-  <h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
-  <p>{{ post.description }}</p>
-</div>
+	<div>
+		<h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+		<p>{{ post.description }}</p>
+	</div>
 {% endfor %}

@@ -16,7 +16,7 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 
 ## Upcoming
 - Food stats: Pull ingredient stats from database and auto-include 
-- Adaptive Design: Mobile-friendly layout for better accessibility
+- Adaptive Design: Mobile-friendly layout 
 - Scheduled posting
 - Post Categorization: Organize posts using categories or tags
 

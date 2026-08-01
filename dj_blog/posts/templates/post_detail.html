@@ -1,58 +1,57 @@
 {% load static %}
 <h1>Recipe Instructions</h1>
 <div>
-  <h2>{{ post.title }}</h2>
-  <p class="small text-muted">Chef: {{ post.author }}
-    {% if post.author.profile %}
-      <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
-    {% endif %}
-    {% if post.author.profile.profile_pic %}
-      <img src="{{ post.author.profile.profile_pic.url }}" width=100 height=100>
-    {% else %}
-      <img src="{% static 'dj_blog/images/default_profile_pic.png' %}" width=100 height=100>
-    {% endif %}
-  </p>
-  <p>Published: {{ post.published }}</p>
-  <p>Rating: {{ post.get_rating }}/5.0 ☆ ( {{ post.get_review_count }} )</p>
-  {% if post.cover  %}
-    <img src="{{ post.cover.url }}" alt="{{ post.title }}">
-  {% endif %}
-  <p>Description: {{ post.description }}</p>
-  <p>Recipe: {{ post.content }}</p>
- 
-  {% if post.author.id == request.user.id%}
-    <form method="get">
-      <button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
-    </form>
-  {% endif %}
+	<h2>{{ post.title }}</h2>
+	<p class="small text-muted">Chef: {{ post.author }}
+		{% if post.author.profile %}
+			<a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
+		{% endif %}
+		{% if post.author.profile.profile_pic %}
+			<img src="{{ post.author.profile.profile_pic.url }}" width=100 height=100>
+		{% else %}
+			<img src="{% static 'dj_blog/images/default_profile_pic.png' %}" width=100 height=100>
+		{% endif %}
+	</p>
+  	<p>Published: {{ post.published }}</p>
+  	<p>Rating: {{ post.get_rating }}/5.0 ☆ ( {{ post.get_review_count }} )</p>
+  	{% if post.cover  %}
+    	<img src="{{ post.cover.url }}" alt="{{ post.title }}">
+  	{% endif %}
+	<p>Description: {{ post.description }}</p>
+	<p>Recipe: {{ post.content }}</p>
+	
+	{% if post.author.id == request.user.id%}
+		<form method="get">
+			<button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
+		</form>
+  	{% endif %}
 
-  {% if request.user not in post.match_reviewer %}
-    <form method="get">
-      <button type="submit", formaction="{% url 'post_rating' post.pk %}">Rate Recipe</button>
-    </form>
-  {% endif %}
+  	{% if request.user not in post.match_reviewer %}
+		<form method="get">
+			<button type="submit", formaction="{% url 'post_rating' post.pk %}">Rate Recipe</button>
+		</form>
+  	{% endif %}
   
   
-  <form method="get">
-    <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-  </form>
-  <h2>Comments...</h2>
-  <form method="get">
-    <button type="submit", formaction="{% url 'add_comment' post.pk %}">Add Comment</button>
-  </form>
-  {% if not post.comments.all %}
-    <p>No comments yet</p>
-  {% else %}
-    {% for comment in post.comments.all %}
-      <div>
-        <strong>
-        {{ comment.name }} - 
-        {{ comment.created_on }} - 
-        </strong>
-        
-        <br/>
-        {{ comment.body }} 
-      </div>
-    {% endfor %}
-  {% endif %}
+	<form method="get">
+		<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+	</form>
+	<h2>Comments...</h2>
+	<form method="get">
+		<button type="submit", formaction="{% url 'add_comment' post.pk %}">Add Comment</button>
+	</form>
+	{% if not post.comments.all %}
+		<p>No comments yet</p>
+	{% else %}
+		{% for comment in post.comments.all %}
+			<div>
+				<strong>
+				{{ comment.name }} - 
+				{{ comment.created_on }} - 
+				</strong>
+				<br/>
+				{{ comment.body }} 
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
