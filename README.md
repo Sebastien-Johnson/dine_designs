@@ -12,9 +12,9 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Admin Dashboard: Manage users and content with Django's admin interface.
 - User profiles
 - Commenting System: Engage readers through comments on posts
+- Rating system: Rate other's recipes
 
 ## Upcoming
-- Rating system: Rate other's recipes
 - Food stats: Pull ingredient stats from database and auto-include 
 - Adaptive Design: Mobile-friendly layout for better accessibility
 - Scheduled posting

@@ -20,9 +20,9 @@ class Post(models.Model):
         return f"{self.title}, by {str(self.author)} ({self.average_rating()}/5★)"
 
     def match_reviewer(self):
-        return self.get_all_reveiwers()
-                
-    def get_all_reveiwers(self):
+        return self.get_all_reviewers()
+    
+    def get_all_reviewers(self):
         reviewers = []
         for rating in self.ratings.all():
             reviewers.append(rating)
@@ -33,6 +33,11 @@ class Post(models.Model):
 
     def average_rating(self):
         return Rating.objects.filter(post=self).aggregate(Avg("score"))["score__avg"] or 0
+
+    def get_review_count(self):
+        return len(self.get_all_reviewers())
+
+    
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

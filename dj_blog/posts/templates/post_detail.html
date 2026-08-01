@@ -13,12 +13,13 @@
     {% endif %}
   </p>
   <p>Published: {{ post.published }}</p>
+  <p>Rating: {{ post.get_rating }}/5.0 ☆ ( {{ post.get_review_count }} )</p>
   {% if post.cover  %}
     <img src="{{ post.cover.url }}" alt="{{ post.title }}">
   {% endif %}
   <p>Description: {{ post.description }}</p>
   <p>Recipe: {{ post.content }}</p>
-  <p>Rating: {{ post.get_rating }}/5.0 ☆</p>
+ 
   {% if post.author.id == request.user.id%}
     <form method="get">
       <button type="submit", formaction="{% url 'post_edit' post.pk %}">Edit Recipe</button>
