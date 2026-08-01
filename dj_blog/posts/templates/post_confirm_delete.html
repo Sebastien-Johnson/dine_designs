@@ -10,7 +10,7 @@
 	<p>Are you sure that you want to delete the post "{{post.title}}"?</p>
 	<div>
 		<button type="submit", formaction="{% url 'post_confirm_delete' post.pk %}">Delete Recipe</button>
-		<a href="{% url 'post_detail' post.pk %}">Cancel</a>
+		<button type="submit", formaction="{% url 'post_detail' post.pk %}">Cancel</button>
 	</div>
 </form>
 

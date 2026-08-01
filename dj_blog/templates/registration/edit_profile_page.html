@@ -5,22 +5,24 @@
 {% block content %}
 {% if request.user.is_authenticated %}
     {% if profile.user.id == request.user.id%}
-        
-        <h1>Edit Profile</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="btn btn-secondary">Update Profile Page</button>
-        </form>
-        <form method="get">
-            <button type="submit", formaction="{% url 'show_profile_page' profile.id %}">Return to Profile</button>
-        </form>
-        
+        <h2>Edit Profile</h2>
+        <div class="form-group">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-secondary">Update Profile Page</button>
+            </form>
+            <form method="get">
+                <button type="submit", formaction="{% url 'show_profile_page' profile.id %}">Return to Profile</button>
+            </form>
+        </div>
     {% endif %}
 {% else %}
-    <p>Please login to edit your profile</p>
-    <form method="get">
-        <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-    </form>
+    <h2>Please login to edit your profile</h2>
+    <div class="form-group">
+        <form method="get">
+            <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+        </form>
+    </div>
 {% endif %}
 {% endblock %}

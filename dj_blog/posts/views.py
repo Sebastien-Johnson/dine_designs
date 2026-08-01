@@ -103,25 +103,3 @@ class PostRatingView(CreateView):
         form.instance.post_id = self.kwargs["pk"]
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-class PostEditRatingView(UpdateView):
-    model = Rating
-    form_class = AddRating
-    template_name = "post_edit_rating.html"
-    success_url = reverse_lazy("post_list")
-
-    def edit_post_rating(request, pk):
-        rating = get_object_or_404(Rating, pk=pk)
-        if request.method == "GET":
-            context = {"form": AddRating(instance=rating), "pk": pk}
-            return render(request,"post_edit_rating.html", context)
-
-        elif request.method == "POST":
-            form = AddRating(request.Rating, instance=rating)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "The rating has been updated successfully.")
-                return redirect("post_list")
-            else:
-                messages.error(request, "Please correct the following errors:")
-                return render(request,"post_edit_rating.html",{"form":form})

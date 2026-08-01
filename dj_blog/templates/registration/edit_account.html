@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if object.author.id == request.user.id%}
-    <h1>Edit account...</h1>
+    <h2>Edit account...</h2>
     <div class="form-group">
         <form method="post">
             {% csrf_token %}
@@ -26,8 +26,10 @@
     </div>
 {% else %}
     <h2>Only account owners can edit their pages!</h2>
-    <form method="get">
-        <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-    </form>
+    <div class="form-group"></div>
+        <form method="get">
+            <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+        </form>
+    </div>
 {% endif %}
 {% endblock %}

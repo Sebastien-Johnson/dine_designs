@@ -4,22 +4,33 @@
 
 {% block content %}
 <h2>Log In</h2>
-<form method="post">
-	{% csrf_token %}
-	{{ form }}
-	<button type="submit">Log In</button>
-</form>
-<p>New? Sign up
-<form method="get">
-  	<button type="submit", formaction="{% url 'signup' %}">Signup</button>
-</form>
-</p>
-<p>Admins
-<form method="get">
-  	<button type="submit", formaction="/admin">Admin Portal</button>
-</form>
-</p>
-<form method="get">
-  	<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-</form>
+<div class="form-group">
+	<form method="post">
+		{% csrf_token %}
+		{{ form }}
+		<button type="submit">Log In</button>
+	</form>
+</div>
+
+<div class="form-group">
+	<h3>New? Sign up!
+		<form method="get">
+			<button type="submit", formaction="{% url 'signup' %}">Signup</button>
+		</form>
+	</h3>
+</div>
+
+<div class="form-group">
+	<h3>Admins
+		<form method="get">
+			<button type="submit", formaction="/admin">Admin Portal</button>
+		</form>
+	</h3>
+</div>
+
+<div class="form-group">
+	<form method="get">
+		<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+	</form>
+</div>
 {% endblock %}

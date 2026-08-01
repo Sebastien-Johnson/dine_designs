@@ -4,16 +4,20 @@
 
 {% block content %}
 {% if request.user.is_authenticated %}
-	<h2>Create Profile Page</h2>
+	<h1>Create Profile Page</h1>
+	<div class="form-group">
 		<form method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit">Create Profile Page</button>
 		</form>
+	</div>
 {% else %}
-	<p>Please login with account to create a profile page!</p>
-	<form method="get">
-		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-	</form>
+	<h2>Please login with account to create a profile page!</h2>
+	<div class="form-group">
+		<form method="get">
+			<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+		</form>
+	</div>
 {% endif %}
 {% endblock %}

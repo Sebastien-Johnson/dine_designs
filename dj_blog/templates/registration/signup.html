@@ -4,12 +4,14 @@
 
 {% block content %}
 <h2>Sign up</h2>
-<form method="post">
-	{% csrf_token %}
-	{{ form }}
-	<button type="submit">Sign Up</button>
-</form>
-<form method="get">
-  	<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
-</form>
+<div class="form-group">
+	<form method="post">
+		{% csrf_token %}
+		{{ form }}
+		<button type="submit">Sign Up</button>
+	</form>
+	<form method="get">
+		<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+	</form>
+</div>
 {% endblock %}

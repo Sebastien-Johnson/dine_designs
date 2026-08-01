@@ -1,10 +1,7 @@
 from django.db import models
-from datetime import datetime
+from datetime import date
 from django.db.models import Avg
 from accounts.models import CustomUser 
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.http import request
-
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
@@ -12,10 +9,9 @@ class Post(models.Model):
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
     ingredients = models.TextField(max_length=200)
     instructions = models.TextField()
-    published = models.DateTimeField(default=f"{datetime.today().day}/{datetime.today().month}/{datetime.today().year}")
+    published = models.DateField(default=(f"{date.today().month}/{date.today().day}/{date.today().year}"))
     ratings = models.ManyToManyField(CustomUser, through="Rating", through_fields=("post", "user"))
     
-
     def __str__(self):
         return f"{self.title}, by {str(self.author)} ({self.average_rating()}/5★)"
 
