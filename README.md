@@ -1,5 +1,5 @@
 # dine_designs
-Recipe sharing web app that allows for CRUD, commenting, reviewing, searching and filtering posts.
+Recipe sharing web app that allows for CRUD operations, commenting and rating
 
 ## Motivation
 - Having a large family of cooks with few handing down their secrets is a recipe for disaster
@@ -7,10 +7,10 @@ Recipe sharing web app that allows for CRUD, commenting, reviewing, searching an
 - Building an app that feels good to users across a broad age range
 
 ## Features
-- User Authentication: Secure registration and login functionality.
-- CRUD Operations: Create, read, update, and delete blog posts.
-- Admin Dashboard: Manage users and content with Django's admin interface.
-- User profiles
+- User Authentication: Secure registration and login functionality
+- Users: Create and edit profiles and accounts
+- CRUD Operations: Create, read, update, and delete blog posts
+- Admin Dashboard: Manage users and content with Django's admin interface
 - Commenting System: Engage readers through comments on posts
 - Rating system: Rate other's recipes
 
@@ -60,6 +60,10 @@ python manage.py runserver
 
 ## Future updates
 - Pull nutrition facts automatically as you add to your recipe
+- Post category tags
+- Searching and filtering
+- Comment replies
+- Editing ratings
 
 ## Contributing
 - If you'd like to contribute, please fork, clone and test the repository before opening a pull request to the `main` branch.
