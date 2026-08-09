@@ -64,16 +64,16 @@ def get_api_foods():
 
         print("Enter next ingredient")
         food_req = input()
-        
     
         headers={"x-api-key":key}
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
 
         response = requests.get(url, headers=headers)
-        food = response.json()["foods"]
-        #iterate through all food options/"descriptions" and choose
+        foods_resp = response.json()["foods"]
+        choice = options_list(foods_resp)
+
         
-        new_food = create_food_item(food[0])
+        new_food = create_food_item(choice)
         new_food.get_info()
 
 
@@ -86,7 +86,7 @@ def create_food_item(food):
         ["fiber", 1.0],
         ["energy", 1.0],
     ]
-    print(macros[0][0])
+    
     for nutrient in nutrients:
         for macro in macros:
             if macro[0].lower() in nutrient["nutrientName"].lower():
@@ -104,5 +104,23 @@ def create_food_item(food):
                     )
 
     return new_food
+
+def options_list(foods_resp):
+    foods_list = {}
+    i = 1
+    for food in foods_resp:
+        foods_list[food["description"]] = i
+        i += 1
+
+    j = 1
+    for food in foods_list:
+        print(f"{j}. {food}\n")
+        j += 1
+    
+    print("Choose an option (by number)")
+    choice = input()
+    
+    food_choice = foods_resp[int(choice)-1]
+    return food_choice
 
 get_api_foods()
