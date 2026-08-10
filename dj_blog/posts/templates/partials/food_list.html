@@ -1,0 +1,9 @@
+{% if ingredients %}
+    <ul class="list=group col-4">
+    {% for ingredient in ingredients %}
+        <li class="list-group-item">{{ food.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You do not have any ingredients in your list</p>
+{% endif %}

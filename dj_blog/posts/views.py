@@ -1,10 +1,12 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect, request
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment, Rating
-from .forms import CreatePost, AddComment, AddRating
+from .models import Post, Comment, Rating, Food
+from .forms import CreatePost, AddComment, AddRating, CreateFood
+from django.views.generic.list import ListView
+import yaml, requests
 
 
 
@@ -103,3 +105,121 @@ class PostRatingView(CreateView):
         form.instance.post_id = self.kwargs["pk"]
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class FoodList(ListView):
+    model = Food
+    template_name = "foods.html"
+    context_object_name = "foods"
+
+    def get_queryset(self):
+        post = self.request.post 
+        return post.ingredients.all()
+
+def add_food(request):
+    with open("onfig.yaml", "r") as ymlfile:
+        cfg = yaml.safe_load(ymlfile)
+        key = str(cfg["usda_api_key"])
+        #user's food query
+        food_req = request.POST.get("food_name")
+        headers={"x-api-key":key}
+        url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
+
+        #user's food response
+        response = requests.get(url, headers=headers)
+        
+        foods_resp = response.json()["foods"]
+
+        # get selected food json data from resp
+        food_json = foods_resp["?"]
+
+        nutrients = food_json["foodNutrients"]
+
+        macros = [
+            ["protien", 1.0],
+            ["carb", 1.0],
+            ["fat", 1.0],
+            ["energy", 1.0],
+        ]
+
+        for nutrient in nutrients:
+                for macro in macros:
+                    if macro[0].lower() in nutrient["nutrientName"].lower():
+                        macro[1] = nutrient["value"]
+        new_food = Food.objects.get_or_create(
+                                name=food_json["description"], 
+                                protiens=float(macros[0][1]), 
+                                carbs=float(macros[1][1]), 
+                                fats=float(macros[2][1]), 
+                                calories=float(macros[3][1]),  
+                                base_serving=float(food_json["servingSize"]),
+                                base_unit=food_json["servingSizeUnit"],
+                            )
+        #add new food to post creation view
+
+    ingredients = request.post.ingredients.all()
+    return render(request, "partials/food_list.html", {"ingredients": ingredients})
+
+def create_food_item(food):
+    nutrients = food["foodNutrients"]
+    macros = [
+        ["protien", 1.0],
+        ["carb", 1.0],
+        ["fat", 1.0],
+        ["fiber", 1.0],
+        ["energy", 1.0],
+    ]
+    
+    for nutrient in nutrients:
+        for macro in macros:
+            if macro[0].lower() in nutrient["nutrientName"].lower():
+                macro[1] = nutrient["value"]
+
+    new_food = Food(
+                        food["description"], 
+                        float(macros[0][1]), 
+                        float(macros[1][1]), 
+                        float(macros[2][1]), 
+                        float(macros[3][1]), 
+                        float(macros[4][1]), 
+                        float(food["servingSize"]),
+                        food["servingSizeUnit"]
+                    )
+
+    return new_food
+
+def options_list(foods_resp):
+    foods_list = {}
+    i = 1
+    for food in foods_resp:
+        foods_list[food["description"]] = i
+        i += 1
+
+    j = 1
+    for food in foods_list:
+        print(f"{j}. {food}\n")
+        j += 1
+    
+    print("Choose an option (by number)")
+    choice = input()
+    
+    food_choice = foods_resp[int(choice)-1]
+    return food_choice
+
+class FoodCreateView(CreateView):
+    model = Food
+    form_class = CreateFood
+    success_url = reverse_lazy("post_list")
+    template_name = "food_create.html"
+
+    def upload_file(request):
+        if request.method == "POST":
+            form = CreatePost(request.POST, request.DATA)
+
+        if form.is_valid():
+            # file is saved
+            form.save()
+            return HttpResponseRedirect("post_list")
+        else:
+            form = CreatePost()
+        return render(request, "post_create.html", {"form": form})
+

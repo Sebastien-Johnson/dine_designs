@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Search Ingredient{% endblock %}
+
+{% block content %}
+<form>
+    {% csrf_token %}
+    <input type="text" name="food_name" class="form-control-sm mr-2" placeholder="Enter Ingredient Name"> 
+    <button hx-post="{% url 'add_food' %}" hx-target="#food_list" type="submit" class="btn btn-success btn-sm">Add Ingredient</button>
+</form>
+<div id="food_list">
+    {% include 'partials/food_list.html' %}
+</div>
+
+{% endblock %}
