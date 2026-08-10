@@ -13,7 +13,9 @@ urlpatterns = [
 ]
 
 htmx_urlpatterns = [
-    path("add_food/", add_food, name="add_food")
+    path("add_food/", add_food, name="add_food"),
+    path("delete_food/<int:pk>", delete_food, name="delete_food"),
+    path("search_food/", search_food, name="search_food"),
 ]
 
 urlpatterns += htmx_urlpatterns

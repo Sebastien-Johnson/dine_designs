@@ -10,6 +10,7 @@ import yaml, requests
 
 
 
+
 class PostListView(ListView):
     model = Post
     template_name = "post_list.html"
@@ -116,94 +117,74 @@ class FoodList(ListView):
         return post.ingredients.all()
 
 def add_food(request):
-    with open("onfig.yaml", "r") as ymlfile:
+    #with open("config.yaml", "r") as ymlfile:
+        #cfg = yaml.safe_load(ymlfile)
+        #key = str(cfg["usda_api_key"])
+        #user's food query
+    food_req = request.POST.get("food_name")
+    headers={"x-api-key":"uFndqhD71Wkofc6ftcwEvlGyIfu4l0fS4yqAb7dC"}
+    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
+
+    #user's food response
+    response = requests.get(url, headers=headers)
+    
+    food_resp = response.json()["foods"]
+
+    # get selected food json data from resp
+    food_json = food_resp[0]
+
+    new_food = create_food_item(food_json)
+
+    #add new food to post creation view
+
+    foods = request.food.all()
+    return render(request, "partials/food_list.html", {"foods": foods})
+
+def delete_food(request, pk):
+    request.user.foods.remove(pk)
+    foods = request.user.foods.all()
+    return render(request, "partials/food_list.html", {"foods": foods})
+
+def search_food(request):
+    with open("config.yaml", "r") as ymlfile:
         cfg = yaml.safe_load(ymlfile)
         key = str(cfg["usda_api_key"])
         #user's food query
-        food_req = request.POST.get("food_name")
+        food_req = request.POST.get("search")
         headers={"x-api-key":key}
         url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
+        results = requests.get(url, headers=headers)
+        context = {"results":results}
+        return render(request, "partials/search_results.html", context)
+    
 
-        #user's food response
-        response = requests.get(url, headers=headers)
-        
-        foods_resp = response.json()["foods"]
 
-        # get selected food json data from resp
-        food_json = foods_resp["?"]
-
-        nutrients = food_json["foodNutrients"]
-
-        macros = [
-            ["protien", 1.0],
-            ["carb", 1.0],
-            ["fat", 1.0],
-            ["energy", 1.0],
-        ]
-
-        for nutrient in nutrients:
-                for macro in macros:
-                    if macro[0].lower() in nutrient["nutrientName"].lower():
-                        macro[1] = nutrient["value"]
-        new_food = Food.objects.get_or_create(
-                                name=food_json["description"], 
-                                protiens=float(macros[0][1]), 
-                                carbs=float(macros[1][1]), 
-                                fats=float(macros[2][1]), 
-                                calories=float(macros[3][1]),  
-                                base_serving=float(food_json["servingSize"]),
-                                base_unit=food_json["servingSizeUnit"],
-                            )
-        #add new food to post creation view
-
-    ingredients = request.post.ingredients.all()
-    return render(request, "partials/food_list.html", {"ingredients": ingredients})
-
-def create_food_item(food):
-    nutrients = food["foodNutrients"]
+def create_food_item(food_json):
+    nutrients = food_json["foodNutrients"]
     macros = [
-        ["protien", 1.0],
-        ["carb", 1.0],
-        ["fat", 1.0],
-        ["fiber", 1.0],
-        ["energy", 1.0],
-    ]
+                ["protien", 1.0],
+                ["carb", 1.0],
+                ["fat", 1.0],
+                ["energy", 1.0],
+            ]
     
     for nutrient in nutrients:
-        for macro in macros:
-            if macro[0].lower() in nutrient["nutrientName"].lower():
-                macro[1] = nutrient["value"]
+            for macro in macros:
+                if macro[0].lower() in nutrient["nutrientName"].lower():
+                    macro[1] = nutrient["value"]
 
-    new_food = Food(
-                        food["description"], 
-                        float(macros[0][1]), 
-                        float(macros[1][1]), 
-                        float(macros[2][1]), 
-                        float(macros[3][1]), 
-                        float(macros[4][1]), 
-                        float(food["servingSize"]),
-                        food["servingSizeUnit"]
-                    )
-
+    new_food = Food.objects.get_or_create(
+                            name=food_json["description"], 
+                            protiens=float(macros[0][1]), 
+                            carbs=float(macros[1][1]), 
+                            fats=float(macros[2][1]), 
+                            calories=float(macros[3][1]),  
+                            base_serving=float(food_json["servingSize"]),
+                            base_unit=food_json["servingSizeUnit"],
+                        )
     return new_food
 
-def options_list(foods_resp):
-    foods_list = {}
-    i = 1
-    for food in foods_resp:
-        foods_list[food["description"]] = i
-        i += 1
 
-    j = 1
-    for food in foods_list:
-        print(f"{j}. {food}\n")
-        j += 1
-    
-    print("Choose an option (by number)")
-    choice = input()
-    
-    food_choice = foods_resp[int(choice)-1]
-    return food_choice
 
 class FoodCreateView(CreateView):
     model = Food
