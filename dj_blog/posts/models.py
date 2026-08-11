@@ -44,7 +44,6 @@ class Post(models.Model):
     #         self.fats += ingredient.fats
     #         self.calories += ingredient.calories
 
-    
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -72,8 +71,14 @@ class Comment(models.Model):
 def get_default_post():
     return Post.objects.get_or_create(name='Default Post')[0].id
 
+class Ingredient(models.Model):
+    post = models.OneToOneField(Post, null=True, on_delete=models.CASCADE, related_name="ingredients")
+
+def get_default_ingredient():
+    return Ingredient.objects.get_or_create(post=get_default_post)[0].id
+
 class Food(models.Model):
-    posts = models.ManyToManyField(Post)
+    list = models.ForeignKey(Ingredient, default=get_default_ingredient, on_delete=models.RESTRICT,related_name="foods")
     name = models.CharField(max_length=200)
     protiens = models.IntegerField()
     carbs = models.IntegerField()
@@ -81,4 +86,3 @@ class Food(models.Model):
     calories = models.IntegerField()
     base_serving = models.IntegerField() 
     base_unit = models.CharField()
-

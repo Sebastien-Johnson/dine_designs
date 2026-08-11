@@ -7,6 +7,7 @@ from .models import Post, Comment, Rating, Food
 from .forms import CreatePost, AddComment, AddRating, CreateFood
 from django.views.generic.list import ListView
 import yaml, requests
+from django.conf import settings
 
 
 
@@ -113,8 +114,8 @@ class FoodList(ListView):
     context_object_name = "foods"
 
     def get_queryset(self):
-        post = self.request.post 
-        return post.ingredients.all()
+        ingredient = self.request.ingredient
+        return ingredient.all()
 
 def add_food(request):
     #with open("config.yaml", "r") as ymlfile:
@@ -137,18 +138,17 @@ def add_food(request):
 
     #add new food to post creation view
 
-    foods = request.food.all()
+    request.ingredients.add(new_food)
+    foods = request.user.ingredients.all()
     return render(request, "partials/food_list.html", {"foods": foods})
 
 def delete_food(request, pk):
-    request.user.foods.remove(pk)
-    foods = request.user.foods.all()
+    request.ingredients.foods.remove(pk)
+    foods = request.ingredients.foods.all()
     return render(request, "partials/food_list.html", {"foods": foods})
 
 def search_food(request):
-    with open("config.yaml", "r") as ymlfile:
-        cfg = yaml.safe_load(ymlfile)
-        key = str(cfg["usda_api_key"])
+        key = str(settings.DJANGO_SECRET_KEY)
         #user's food query
         food_req = request.POST.get("search")
         headers={"x-api-key":key}

@@ -1,10 +1,12 @@
 from pathlib import Path
+from YamJam import yamjam
 import os
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-er+1lzeorr!roqb(#ygfg@9uie8p34$dmv8mv%u%*%&w6!p91&"
+DJANGO_SECRET_KEY = yamjam()['myproject']['django_secret_key']
 DEBUG = True
 
 ALLOWED_HOSTS = []
