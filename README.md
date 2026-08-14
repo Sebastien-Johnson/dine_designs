@@ -32,9 +32,23 @@ python -m venv /path/to/new/virtual/environment
 ```
 pip install -r /path/to/requirements.txt
 ```
-- [Get api key](https://fdc.nal.usda.gov/api-key-signup#top) and add to 'config.yaml' file
+- [Get api key](https://fdc.nal.usda.gov/api-key-signup#top) and setup yaml file
 ```
-usda_api_key: api_key
+mkdir ~/.yamjam
+touch ~/.yamjam/config.yaml
+chmod -R go-rwx ~/.yamjam
+```
+settings.py
+```
+from YamJam import yamjam
+...
+DJANGO_SECRET_KEY = yamjam()['myproject']['django_secret_key']
+...
+```
+~/.yamjam/config.yaml
+```
+myproject:
+    django_secret_key: api_key
 ```
 - Enter 'dj_blog' directory and run migrations
 ```
