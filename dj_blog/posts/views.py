@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment, Rating, Food
+from .models import Post, Comment, Rating, Food, IngredientList
 from .forms import CreatePost, AddComment, AddRating, CreateFood
 from django.views.generic.list import ListView
 import yaml, requests
@@ -32,6 +32,13 @@ class PostCreateView(CreateView):
         if request.method == "POST":
             form = CreatePost(request.POST, request.DATA)
 
+    def create_ingredient_list(request):
+        if request.method == "GET":
+            if request.IngredientList:
+                IngredientList.delete()
+            else:
+                new_list = IngredientList.objects.get_or_create()
+                return new_list
 
     def upload_file(request):
         if request.method == "POST":
@@ -148,14 +155,14 @@ def delete_food(request, pk):
     return render(request, "partials/food_list.html", {"foods": foods})
 
 def search_food(request):
-        key = str(settings.DJANGO_SECRET_KEY)
-        #user's food query
-        food_req = request.POST.get("search")
-        headers={"x-api-key":key}
-        url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
-        results = requests.get(url, headers=headers)
-        context = {"results":results}
-        return render(request, "partials/search_results.html", context)
+    key = str(settings.DJANGO_SECRET_KEY)
+    #user's food query
+    food_req = request.POST.get("search")
+    headers={"x-api-key":key}
+    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
+    results = requests.get(url, headers=headers)
+    context = {"results":results}
+    return render(request, "partials/search_results.html", context)
     
 
 

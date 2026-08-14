@@ -4,6 +4,22 @@ from django.db.models import Avg
 from accounts.models import CustomUser 
 
 #access food via food_set
+class IngredientList(models.Model):
+    proteins = 0
+    carbs = 0
+    fats = 0
+    calories = 0
+
+    def compile_macros(self):
+        for food in self.foods:
+            self.proteins += food.proteins
+            self.carbs += food.carbs
+            self.fats += food.fats
+            self.calories += food.calories
+
+    def __str__(self):
+        return f"{self.posts}, {self.foods}"
+
 class Post(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey(CustomUser, related_name="posts", on_delete=models.CASCADE, default=None)
@@ -15,6 +31,7 @@ class Post(models.Model):
     carbs = models.IntegerField(default=0)
     fats = models.IntegerField(default=0)
     calories = models.IntegerField(default=0)
+    ingredient_list = models.OneToOneField(IngredientList, default=None, on_delete=models.RESTRICT, related_name="posts")
     
     def __str__(self):
         return f"{self.title}, by {str(self.author)} ({self.average_rating()}/5★)"
@@ -38,11 +55,11 @@ class Post(models.Model):
         return len(self.get_all_reviewers())
 
     # def compile_macros(self):
-    #     for ingredient in self.ingredient:
-    #         self.proteins += ingredient.proteins
-    #         self.carbs += ingredient.carbs
-    #         self.fats += ingredient.fats
-    #         self.calories += ingredient.calories
+    #     for ingredientList in self.ingredientList:
+    #         self.proteins += ingredientList.proteins
+    #         self.carbs += ingredientList.carbs
+    #         self.fats += ingredientList.fats
+    #         self.calories += ingredientList.calories
 
 
 class Rating(models.Model):
@@ -68,17 +85,8 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.post.title} by {self.name}"
 
-def get_default_post():
-    return Post.objects.get_or_create(name='Default Post')[0].id
-
-class Ingredient(models.Model):
-    post = models.OneToOneField(Post, null=True, on_delete=models.CASCADE, related_name="ingredients")
-
-def get_default_ingredient():
-    return Ingredient.objects.get_or_create(post=get_default_post)[0].id
 
 class Food(models.Model):
-    list = models.ForeignKey(Ingredient, default=get_default_ingredient, on_delete=models.RESTRICT,related_name="foods")
     name = models.CharField(max_length=200)
     protiens = models.IntegerField()
     carbs = models.IntegerField()
@@ -86,3 +94,4 @@ class Food(models.Model):
     calories = models.IntegerField()
     base_serving = models.IntegerField() 
     base_unit = models.CharField()
+    ingredient_list = models.ForeignKey(IngredientList, default=None, on_delete=models.RESTRICT, related_name="foods")

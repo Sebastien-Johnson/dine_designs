@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, Rating, Food
+from .models import Post, Comment, Rating, Food, IngredientList
 class CreatePost(forms.ModelForm):
     class Meta:
         model = Post
@@ -31,4 +31,9 @@ class AddRating(forms.ModelForm):
 class CreateFood(forms.ModelForm):
     class Meta:
         model = Food
+        fields = ()
+
+class CreateIngredientList(forms.ModelForm):
+    class Meta:
+        model = IngredientList
         fields = ()
