@@ -62,7 +62,7 @@ WSGI_APPLICATION = "dine_designs.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "django_db",
+        "NAME": "dine_designs.db",
     }
 }
 

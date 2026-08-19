@@ -220,5 +220,5 @@ __marimo__/
 #generated
 images/
 !images/.gitkeep
-
+dine_designs.db
 !static
