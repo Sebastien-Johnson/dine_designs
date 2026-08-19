@@ -2,6 +2,7 @@ import yaml
 import requests
 import json
 
+
 class food_item():
     def __init__(self, name, protiens, carbs, fats, fiber, base_calories, base_serving, unit):
         self.name = name
@@ -77,8 +78,8 @@ def get_api_foods():
         new_food.get_info()
 
 
-def create_food_item(food):
-    nutrients = food["foodNutrients"]
+def create_food_item(food_data):
+    nutrients = food_data["foodNutrients"]
     macros = [
         ["protien", 1.0],
         ["carb", 1.0],
@@ -93,14 +94,14 @@ def create_food_item(food):
                 macro[1] = nutrient["value"]
 
     new_food = food_item(
-                        food["description"], 
+                        food_data["description"], 
                         float(macros[0][1]), 
                         float(macros[1][1]), 
                         float(macros[2][1]), 
                         float(macros[3][1]), 
                         float(macros[4][1]), 
-                        float(food["servingSize"]),
-                        food["servingSizeUnit"]
+                        float(food_data["servingSize"]),
+                        food_data["servingSizeUnit"]
                     )
 
     return new_food

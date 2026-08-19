@@ -3,10 +3,10 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Comment, Rating, Food, IngredientList
+from .models import Post, Comment, Rating, Food
 from .forms import CreatePost, AddComment, AddRating, CreateFood
 from django.views.generic.list import ListView
-import yaml, requests
+import requests, os
 from django.conf import settings
 
 
@@ -31,14 +31,6 @@ class PostCreateView(CreateView):
     def add_author(request):
         if request.method == "POST":
             form = CreatePost(request.POST, request.DATA)
-
-    def create_ingredient_list(request):
-        if request.method == "GET":
-            if request.IngredientList:
-                IngredientList.delete()
-            else:
-                new_list = IngredientList.objects.get_or_create()
-                return new_list
 
     def upload_file(request):
         if request.method == "POST":
@@ -121,37 +113,45 @@ class FoodList(ListView):
     context_object_name = "foods"
 
     def get_queryset(self):
-        ingredient = self.request.ingredient
-        return ingredient.all()
+        post = Post.objects.create_post(self.request)
+        return post.foods.all()
 
 def add_food(request):
-    #with open("config.yaml", "r") as ymlfile:
-        #cfg = yaml.safe_load(ymlfile)
-        #key = str(cfg["usda_api_key"])
-        #user's food query
-    food_req = request.POST.get("food_name")
-    headers={"x-api-key":"uFndqhD71Wkofc6ftcwEvlGyIfu4l0fS4yqAb7dC"}
+    key = str(settings.DJANGO_SECRET_KEY)
+
+    #get user input 
+    food_req = request.POST.get("foodname")
+    
+    headers={"x-api-key":key}
     url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
 
-    #user's food response
+    #pulls data from api
     response = requests.get(url, headers=headers)
-    
+
     food_resp = response.json()["foods"]
 
     # get selected food json data from resp
     food_json = food_resp[0]
-
     new_food = create_food_item(food_json)
-
-    #add new food to post creation view
-
-    request.ingredients.add(new_food)
-    foods = request.user.ingredients.all()
-    return render(request, "partials/food_list.html", {"foods": foods})
+    
+    #this is where to link to posts with model instance
+    if request.POST.getlist("foods"):
+        new_query = request.POST.copy()
+        new_query.setlist("foods", foods)
+        request.POST = new_query
+        foods = request.POST.getlist("foods")
+        return render(new_query, "partials/food_list.html", {"foods": foods[0]})
+    else:
+        foods = request.POST.getlist("foods", [])
+        foods.append(new_food)
+        new_query = request.POST.copy()
+        new_query.setlist("foods", foods)
+        request.POST = new_query
+        return render(new_query, "partials/food_list.html", {"foods": foods[0]})
 
 def delete_food(request, pk):
-    request.ingredients.foods.remove(pk)
-    foods = request.ingredients.foods.all()
+    request.foods.remove(pk)
+    foods = request.foods.all()
     return render(request, "partials/food_list.html", {"foods": foods})
 
 def search_food(request):
@@ -169,16 +169,16 @@ def search_food(request):
 def create_food_item(food_json):
     nutrients = food_json["foodNutrients"]
     macros = [
-                ["protien", 1.0],
+                ["protein", 1.0],
                 ["carb", 1.0],
                 ["fat", 1.0],
                 ["energy", 1.0],
             ]
     
     for nutrient in nutrients:
-            for macro in macros:
-                if macro[0].lower() in nutrient["nutrientName"].lower():
-                    macro[1] = nutrient["value"]
+        for macro in macros:
+            if macro[0] in nutrient["nutrientName"].lower():
+                macro[1] = nutrient["value"]
 
     new_food = Food.objects.get_or_create(
                             name=food_json["description"], 
@@ -210,4 +210,3 @@ class FoodCreateView(CreateView):
         else:
             form = CreatePost()
         return render(request, "post_create.html", {"form": form})
-

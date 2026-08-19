@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-er+1lzeorr!roqb(#ygfg@9uie8p34$dmv8mv%u%*%&w6!p91&"
 DJANGO_SECRET_KEY = yamjam()['myproject']['django_secret_key']
+DJANGO_DB_PW = yamjam()["myproject"]["django_db_pw"]
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -61,7 +62,7 @@ WSGI_APPLICATION = "dine_designs.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": "django_db",
     }
 }
 
