@@ -5,7 +5,7 @@
 {% block content %}
 {% if request.user.is_authenticated %}
 	<h2>Rate Recipe</h2>
-	<form method="post" enctype="multipart/form-data">
+	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{ form.as_p }}
 		<button type="submit">Submit Rating</button>

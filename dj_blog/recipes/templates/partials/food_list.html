@@ -1,0 +1,18 @@
+{% if foods %}
+    <ul class="list=group col-4">
+    {% for food in foods %}
+        {% if food %}
+            <li class="list-group-item">
+                {{food.name}}<br>
+                Proteins: {{food.protiens}}<br>
+                Carbs: {{food.carbs}}<br>
+                Fats: {{food.fats}}<br>
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You do not have any ingredients in your list</p>
+{% endif %}
+</section>
+

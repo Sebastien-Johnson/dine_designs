@@ -5,35 +5,35 @@
 {% block content %}
 {% if user.is_authenticated %}
 	<p>Account: {{user.username}}</p>
-	<form action="{% url 'edit_account' %}" method="get">
+	<form action="{% url 'edit_account' %}" method="GET">
 		{% csrf_token %}
 	<button type="submit">Edit Account</button>
 	</form>
 	{% if user.profile %}
-		<form method="get">
+		<form method="GET">
 			<button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
 		</form>
 	{% else %}
-		<form method="get">
+		<form method="GET">
 			<button type="submit", formaction="{% url 'create_user_profile_page' %}">Create Profile</button>
 		</form>
 	{% endif %}
-	<form action="{% url 'logout' %}" method="post">
+	<form action="{% url 'logout' %}" method="POST">
 		{% csrf_token %}
 		<button type="submit">Log Out</button>
 	</form>
 {% else %}
-	<form method="get">
+	<form method="GET">
 		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
 	</form>
 {% endif %}
 	<h1>Recent Recipes</h1>
-	<form method="get">
-		<button type="submit", formaction="{% url 'post_create' %}">Create Recipe</button>
+	<form method="GET">
+		<button type="submit", formaction="{% url 'recipe_create' %}">Create Recipe</button>
 	</form>
-{% for post in object_list  %}
+{% for recipe in object_list  %}
 	<div>
-		<h2><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+		<h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
 	</div>
 {% endfor %}
 {% endblock %}

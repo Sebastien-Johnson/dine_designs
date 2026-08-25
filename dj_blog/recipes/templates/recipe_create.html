@@ -5,40 +5,34 @@
 {% block content %}
 {% if request.user.is_authenticated %}
   	<h2>Create Recipe</h2>
-    	<form method="post" enctype="multipart/form-data">
+    	<form method="POST" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ form.as_p }}
-			<form>
-				{% csrf_token %}
-			<button type="submit">Post</button>
-    	</form>
-		<div class="align-center col-10 offset-1">
 			<div class="d-flex justify-content-between align-items-center">
 				<p class="lead ml-0">My Ingredients</p>
-				<form class="d-flex align-items-center">
-					{% csrf_token %}
-					<input type="text" name="foodname" class="form-control-sm mr-2" placeholder="Enter Ingredient Name" /> 
-					<button hx-post="{% url 'add_food' %}" hx-target="#food_list" type="submit" class="btn btn-success btn-sm">Add Ingredient</button>
-				</form>
+				<input type="text" name="foodname" class="form-control-sm mr-2" placeholder="Enter Ingredient Name" /> 
+				<button hx-post="{% url 'add_food' %}" hx-target="#food_list" type="submit" class="btn btn-success btn-sm">Add Ingredient</button>
 			</div>
-
 			<hr/>
 			<div id="food_list">
 				{% include 'partials/food_list.html' %}
 			</div>
-		</div>
+			
+			<button type="submit">Post</button>
+    	</form>
+
 	
     <script>
 		var name = "{{user.id}}";
 		document.getElementById("author_name_field").value = name;
     </script>
     
-    <form method="get">
-    	<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+    <form method="GET">
+    	<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
     </form>
 {% else %}
 	<p>Please login to create new recipes</p>
-	<form method="get">
+	<form method="GET">
 		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
 	</form>
 {% endif %}

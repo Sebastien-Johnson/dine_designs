@@ -1,8 +1,9 @@
 from django import forms
-from .models import Post, Comment, Rating, Food
-class CreatePost(forms.ModelForm):
+from .models import Recipe, Comment, Rating
+
+class CreateRecipe(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Recipe
         fields = ("title", "author", "published", "cover", "instructions")
 
         widgets = {
@@ -27,8 +28,3 @@ class AddRating(forms.ModelForm):
         widgets = {
             "score": forms.NumberInput(attrs={'class': 'form-control'}),
         }
-
-class CreateFood(forms.ModelForm):
-    class Meta:
-        model = Food
-        fields = ()

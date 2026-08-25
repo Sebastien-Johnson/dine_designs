@@ -6,29 +6,29 @@
 {% if object.author.id == request.user.id%}
     <h2>Edit account...</h2>
     <div class="form-group">
-        <form method="post">
+        <form method="POST">
             {% csrf_token %}
             {{ form }}
             <button class="btn btn-secondary">Update Account</button>
         </form>
         {% if user.profile %}
-            <form method="get">
+            <form method="GET">
                 <button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
             </form>
         {% else %}
-            <form method="get">
+            <form method="GET">
                 <button type="submit", formaction="{% url 'create_user_profile_page' %}">Create Profile</button>
             </form>
         {% endif %}
-        <form method="get">
-            <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+        <form method="GET">
+            <button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
         </form>
     </div>
 {% else %}
     <h2>Only account owners can edit their pages!</h2>
     <div class="form-group"></div>
-        <form method="get">
-            <button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+        <form method="GET">
+            <button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
         </form>
     </div>
 {% endif %}

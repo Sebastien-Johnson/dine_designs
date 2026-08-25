@@ -6,7 +6,7 @@
 {% if request.user.is_authenticated %}
 	<h1>Create Profile Page</h1>
 	<div class="form-group">
-		<form method="post" enctype="multipart/form-data">
+		<form method="POST" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ form.as_p }}
 			<button type="submit">Create Profile Page</button>
@@ -15,7 +15,7 @@
 {% else %}
 	<h2>Please login with account to create a profile page!</h2>
 	<div class="form-group">
-		<form method="get">
+		<form method="GET">
 			<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
 		</form>
 	</div>

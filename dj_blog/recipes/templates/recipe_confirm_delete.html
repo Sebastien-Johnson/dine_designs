@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Recipe Delete{% endblock %}
+
+{% block content %}
+<h2>Delete Recipe</h2>
+
+<form method="POST">
+  {% csrf_token %}
+	<p>Are you sure that you want to delete the recipe "{{recipe.title}}"?</p>
+	<div>
+		<button type="submit", formaction="{% url 'recipe_confirm_delete' post.pk %}">Delete Recipe</button>
+		<button type="submit", formaction="{% url 'recipe_detail' post.pk %}">Cancel</button>
+	</div>
+</form>
+
+{% endblock %}

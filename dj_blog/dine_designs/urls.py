@@ -9,7 +9,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("log_auth", TemplateView.as_view(template_name="log_auth.html"), name="log_auth"),
-    path("", include("posts.urls")),
+    path("", include("recipes.urls")),
 ]
 
 if settings.DEBUG:  # new

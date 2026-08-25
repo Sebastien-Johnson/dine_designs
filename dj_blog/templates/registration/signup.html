@@ -5,13 +5,13 @@
 {% block content %}
 <h2>Sign up</h2>
 <div class="form-group">
-	<form method="post">
+	<form method="POST">
 		{% csrf_token %}
 		{{ form }}
 		<button type="submit">Sign Up</button>
 	</form>
-	<form method="get">
-		<button type="submit", formaction="{% url 'post_list' %}">Return Home</button>
+	<form method="GET">
+		<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
 	</form>
 </div>
 {% endblock %}
