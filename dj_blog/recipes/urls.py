@@ -3,7 +3,6 @@ from .views import *
 
 urlpatterns = [
     path("<int:pk>/", RecipeDetailView.as_view(), name="recipe_detail"),
-    path("recipe_create/", RecipeCreateView.as_view(), name="recipe_create"),
     path("<int:pk>/recipe_edit/", RecipeEditView.as_view(), name="recipe_edit"),
     path("<int:pk>/recipe_confirm_delete/", RecipeDeleteView.as_view(), name="recipe_confirm_delete"),
     path("<int:pk>/recipe_rating/", RecipeRatingView.as_view(), name="recipe_rating"),
@@ -13,6 +12,8 @@ urlpatterns = [
 ]
 
 htmx_urlpatterns = [
+    path("recipe_create/", RecipeCreateView.as_view(), name="recipe_create"),
+    path("food_create_inline/", food_create_inline, name="food_create_inline"),
     path("add_food/", add_food, name="add_food"),
     path("delete_food/<int:pk>", delete_food, name="delete_food"),
     path("search_food/", search_food, name="search_food"),

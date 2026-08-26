@@ -1,17 +1,17 @@
-{% if foods %}
+{% if form.foods %}
     <ul class="list=group col-4">
-    {% for food in foods %}
-        {% if food %}
-            <li class="list-group-item">
-                {{food.name}}<br>
-                Proteins: {{food.protiens}}<br>
-                Carbs: {{food.carbs}}<br>
-                Fats: {{food.fats}}<br>
-            </li>
-        {% endif %}
+    {% for food in form.foods %}
+        <li class="list-group-item">
+            {{food.name}}<br>
+            Serving Size: {{food.base_serving}} {{food.base_unit}}<br>
+            Proteins: {{food.protiens}}<br>
+            Carbs: {{food.carbs}}<br>
+            Fats: {{food.fats}}<br>
+        </li>
     {% endfor %}
     </ul>
 {% else %}
+{{ form.foods }}
     <p>You do not have any ingredients in your list</p>
 {% endif %}
 </section>

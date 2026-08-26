@@ -4,12 +4,11 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe, Comment, Rating, Food
-from .forms import CreateRecipe, AddComment, AddRating
+from .forms import CreateRecipe, AddComment, AddRating, CreateFood
 from django.views.generic.list import ListView
-import requests
+from django.db.models.signals import post_save
 from django.conf import settings
-
-
+import requests
 
 
 class RecipeListView(ListView):
@@ -135,6 +134,39 @@ def add_food(request):
         foods = request.POST.getlist("foods")
         return render(request, "partials/food_list.html", {"foods": foods})
 
+def food_create_inline(request):
+    new_food = search_food(request)
+    new_food = new_food[0]
+    if request.method == "POST":
+        
+        new_food.save()
+        print(new_food.name)
+        # Create a fresh food form so the queryset includes the new food
+        recipe_form = CreateRecipe(
+            initial={
+                "foods":[new_food.pk],
+            }
+        )
+        
+        return render(
+            request,
+            "partials/food_list.html",
+            {
+                "form": recipe_form,
+            },
+        )
+
+    else:
+        form = CreateFood()
+    
+    return render(
+        request,
+        "recipe_create.html",
+        {
+            "form": form, 
+        },
+    )
+
 def search_food(request):
     key = str(settings.DJANGO_SECRET_KEY)
     #get user input 
@@ -148,12 +180,12 @@ def search_food(request):
     food_resp = response.json()["foods"]
     # get selected food json data from resp
     food_json = food_resp[0]
-    new_food = (create_food_item(food_json))[0]
+    new_food = create_food_item(food_json)
     
-    new_food.save()
     return new_food
 
 def create_food_item(food_json):
+    
     nutrients = food_json["foodNutrients"]
     macros = [
                 ["protein", 1.0],
@@ -169,16 +201,18 @@ def create_food_item(food_json):
 
     new_food = Food.objects.get_or_create(
                             name=food_json["description"], 
-                            protiens=float(macros[0][1]), 
+                            proteins=float(macros[0][1]), 
                             carbs=float(macros[1][1]), 
                             fats=float(macros[2][1]), 
                             calories=float(macros[3][1]),  
                             base_serving=float(food_json["servingSize"]),
                             base_unit=food_json["servingSizeUnit"],
                         )
+    
     return new_food
 
 def delete_food(request, pk):
     request.foods.remove(pk)
     foods = request.foods.all()
     return render(request, "partials/food_list.html", {"foods": foods})
+

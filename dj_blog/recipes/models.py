@@ -3,6 +3,15 @@ from datetime import date
 from django.db.models import Avg
 from accounts.models import CustomUser 
 
+class Food(models.Model):
+    name = models.CharField(max_length=200)
+    proteins = models.IntegerField(default=0)
+    carbs = models.IntegerField(default=0)
+    fats = models.IntegerField(default=0)
+    calories = models.IntegerField(default=0)
+    base_serving = models.IntegerField(default=0) 
+    base_unit = models.CharField(max_length=10, default="")
+
 class RecipeManager(models.Manager):
     def create_recipe(self, request):
         recipe = self.create(author=request.user)
@@ -20,6 +29,7 @@ class Recipe(models.Model):
     fats = models.IntegerField(default=0)
     calories = models.IntegerField(default=0)
     objects = RecipeManager()
+    foods = models.ManyToManyField(Food)
     
 
     def __str__(self):
@@ -49,16 +59,6 @@ class Recipe(models.Model):
             self.carbs += food.carbs
             self.fats += food.fats
             self.calories += food.calories
-    
-class Food(models.Model):
-    name = models.CharField(max_length=200)
-    protiens = models.IntegerField()
-    carbs = models.IntegerField()
-    fats = models.IntegerField()
-    calories = models.IntegerField()
-    base_serving = models.IntegerField() 
-    base_unit = models.CharField()
-    recipe = models.ManyToManyField(Recipe, related_name="foods")
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
