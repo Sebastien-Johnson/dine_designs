@@ -4,11 +4,11 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe, Comment, Rating, Food
-from .forms import CreateRecipe, AddComment, AddRating, CreateFood
+from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic.list import ListView
-from django.db.models.signals import post_save
+from django.core import serializers
 from django.conf import settings
-import requests
+import requests, json
 
 
 class RecipeListView(ListView):
@@ -108,16 +108,22 @@ class RecipeRatingView(CreateView):
 
 class FoodList(ListView):
     model = Food
-    template_name = "foods.html"
+    template_name = "partial/api_search_bar.html"
     context_object_name = "foods"
 
     def get_queryset(self):
-        recipe = Recipe.objects.create_recipe(self.request)
-        return recipe.foods.all()
-    
+        recipe = self.request.recipe
+        return recipe.foods.all() 
+
+
 def add_food(request):
-    new_food = search_food(request)
-    
+    new_food = search_food(request)[0]
+
+    request.foods.add(new_food)
+
+    foods = request.form.foods.all()
+    return render(request, "partials/food_list.html", {"foods": foods})
+
     #this is where to link to posts with model instance
     if request.POST.getlist("foods"):
         new_query = request.POST.copy()
@@ -135,43 +141,36 @@ def add_food(request):
         return render(request, "partials/food_list.html", {"foods": foods})
 
 def food_create_inline(request):
-    new_food = search_food(request)
-    new_food = new_food[0]
     if request.method == "POST":
+        new_food = search_food(request)
         
-        new_food.save()
-        print(new_food.name)
-        # Create a fresh food form so the queryset includes the new food
         recipe_form = CreateRecipe(
             initial={
-                "foods":[new_food.pk],
+                "foods":[new_food.pk]
             }
         )
+        print(recipe_form)
         
         return render(
             request,
             "partials/food_list.html",
             {
                 "form": recipe_form,
+                
             },
         )
 
-    else:
-        form = CreateFood()
-    
+   
     return render(
         request,
-        "recipe_create.html",
-        {
-            "form": form, 
-        },
+        "partials/api_search_bar.html",
     )
 
 def search_food(request):
     key = str(settings.DJANGO_SECRET_KEY)
     #get user input 
-    food_req = request.POST.get("foodname")
-    
+    food_req = request.POST["foodname"]
+
     headers={"x-api-key":key}
     url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
 
@@ -181,8 +180,8 @@ def search_food(request):
     # get selected food json data from resp
     food_json = food_resp[0]
     new_food = create_food_item(food_json)
-    
-    return new_food
+
+    return new_food[0]
 
 def create_food_item(food_json):
     
@@ -198,7 +197,7 @@ def create_food_item(food_json):
         for macro in macros:
             if macro[0] in nutrient["nutrientName"].lower():
                 macro[1] = nutrient["value"]
-
+    
     new_food = Food.objects.get_or_create(
                             name=food_json["description"], 
                             proteins=float(macros[0][1]), 
@@ -208,6 +207,7 @@ def create_food_item(food_json):
                             base_serving=float(food_json["servingSize"]),
                             base_unit=food_json["servingSizeUnit"],
                         )
+    
     
     return new_food
 

@@ -3,20 +3,21 @@ from datetime import date
 from django.db.models import Avg
 from accounts.models import CustomUser 
 
+#author
 class Food(models.Model):
     name = models.CharField(max_length=200)
-    proteins = models.IntegerField(default=0)
-    carbs = models.IntegerField(default=0)
-    fats = models.IntegerField(default=0)
-    calories = models.IntegerField(default=0)
-    base_serving = models.IntegerField(default=0) 
+    proteins = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+    fats = models.FloatField(default=0)
+    calories = models.FloatField(default=0)
+    base_serving = models.FloatField(default=0) 
     base_unit = models.CharField(max_length=10, default="")
 
 class RecipeManager(models.Manager):
     def create_recipe(self, request):
         recipe = self.create(author=request.user)
         return recipe
-
+#book
 class Recipe(models.Model):
     title = models.CharField(max_length=100, default="")
     author = models.ForeignKey(CustomUser, related_name="recipes", on_delete=models.CASCADE, default=None)
@@ -24,10 +25,10 @@ class Recipe(models.Model):
     instructions = models.TextField(default="")
     published = models.DateField(default=(f"{date.today().year}-{date.today().month}-{date.today().day}"))
     ratings = models.ManyToManyField(CustomUser, through="Rating", through_fields=("recipe", "user"))
-    proteins = models.IntegerField(default=0)
-    carbs = models.IntegerField(default=0)
-    fats = models.IntegerField(default=0)
-    calories = models.IntegerField(default=0)
+    proteins = models.FloatField(default=0)
+    carbs = models.FloatField(default=0)
+    fats = models.FloatField(default=0)
+    calories = models.FloatField(default=0)
     objects = RecipeManager()
     foods = models.ManyToManyField(Food)
     

@@ -1,6 +1,5 @@
 from django import forms
-from django.forms import formset_factory
-from .models import Recipe, Comment, Rating, Food
+from .models import Recipe, Comment, Rating
 
 class CreateRecipe(forms.ModelForm):
     class Meta:
@@ -9,13 +8,8 @@ class CreateRecipe(forms.ModelForm):
 
         widgets = {
             "author": forms.TextInput(attrs={"class":"form-control", "value":"", "id":"author_name_field", "type":"hidden"}),
-            "foods": forms.TextInput(attrs={"type":"hidden"})
         }
 
-class CreateFood(forms.ModelForm):
-    class Meta:
-        model = Food
-        fields = []
 
 class AddComment(forms.ModelForm):
     class Meta:

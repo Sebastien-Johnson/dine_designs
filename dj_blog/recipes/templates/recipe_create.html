@@ -13,16 +13,9 @@
 			{% csrf_token %}
 			{{ form.as_p }}
 			
-			<div>
-				<p>My Ingredients</p>
-				<input type="text" name="foodname" class="form-control-sm mr-2" placeholder="Enter Ingredient Name" /> 
-				<button hx-post="{% url 'food_create_inline' %}" hx-target="#food_list" type="submit" class="btn btn-success btn-sm">Add Ingredient</button>
-			</div>
-
-			<!-- post food obj -->
-			<div id="food_list">
-				{% include "partials/food_list.html" %}
-			</div>
+			<section name="api_search_bar">
+				{% include "partials/api_search_bar.html" %}
+			</section>
 			
 			<hr/>
 			<button type="submit">Post Recipe</button>
