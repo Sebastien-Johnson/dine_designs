@@ -32,8 +32,23 @@
   	{% endif %}
 
   	
+
 	<p>Ingredients: </p>
-	<p>{{ recipe.ingredientList }}</p>
+	{% with foods=recipe.foods.all %}
+		{% if foods %}
+			<ul>
+				{% for food in foods %}
+					<li>
+						{{ food.name }}<br>
+						Serving Size: {{ food.base_serving }} {{ food.base_unit }}<br>
+					</li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<p>No ingredients listed.</p>
+		{% endif %}
+	{% endwith %}
+	
 	<p>Instructions: </p>
 	<p>{{ recipe.instructions }}</p>
 	

@@ -4,11 +4,7 @@ from .models import Recipe, Comment, Rating
 class CreateRecipe(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ("title", "author", "published", "cover", "instructions", "foods")
-
-        widgets = {
-            "author": forms.TextInput(attrs={"class":"form-control", "value":"", "id":"author_name_field", "type":"hidden"}),
-        }
+        fields = ("title", "published", "cover", "instructions")
 
 
 class AddComment(forms.ModelForm):

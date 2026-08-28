@@ -1,10 +1,28 @@
 <div id="api_search_bar">
     <p>My Ingredients</p>
-    <input type="text" name="foodname" class="form-control-sm mr-2" placeholder="Enter Ingredient Name" /> 
-    <button hx-post="{% url 'food_create_inline' %}" hx-target="#food_list" type="submit" class="btn btn-success btn-sm">Add Ingredient</button>
+
+    <input
+        type="text"
+        name="foodname"
+        class="form-control-sm mr-2"
+        placeholder="Enter Ingredient Name"
+    />
+
+    <!-- hx-include keeps all previous hidden inputs -->
+    <button
+        hx-post="{% url 'add_food' %}"
+        hx-target="#food_list"
+        hx-swap="innerHTML"
+        hx-include="#food_list input[name='foods']"
+        type="button"
+        class="btn btn-success btn-sm"
+    >
+        Add Ingredient
+    </button>
 </div>
 
 <!-- post food obj -->
 <div id="food_list">
     {% include "partials/food_list.html" %}
 </div>
+

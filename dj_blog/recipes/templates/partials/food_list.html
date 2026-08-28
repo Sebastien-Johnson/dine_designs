@@ -1,18 +1,25 @@
-{% if foods %}
-    <ul>
-    {% for food in foods %}
-        <li>
-            {{ food.name }}<br>
-            Serving Size: {{ food.base_serving }} {{ food.base_unit }}<br>
-            Proteins: {{ food.proteins }}<br>
-            Carbs: {{ food.carbs }}<br>
-            Fats: {{ food.fats }}<br>
-        </li>
-        
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>You do not have any ingredients in your list</p>
-{% endif %}
-</section>
+    {% if foods %}
+        <ul>
+            {% for food in foods %}
+                <li>
+                    {{ food.name }}<br>
 
+                    Serving Size:
+                    {{ food.base_serving }}
+                    {{ food.base_unit }}<br>
+
+                    Proteins: {{ food.proteins }}<br>
+                    Carbs: {{ food.carbs }}<br>
+                    Fats: {{ food.fats }}<br>
+
+                    <input
+                        type="hidden"
+                        name="foods"
+                        value="{{ food.pk }}"
+                    >
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You do not have any ingredients in your list.</p>
+    {% endif %}

@@ -1,14 +1,14 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import *
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe, Comment, Rating, Food
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic.list import ListView
 from django.core import serializers
 from django.conf import settings
-import requests, json
+import requests
 
 
 class RecipeListView(ListView):
@@ -20,28 +20,49 @@ class RecipeDetailView(DetailView):
     model = Recipe
     template_name = "recipe_detail.html"
 
+    def food_list(self, request):
+        
+        results = self.food_set
+        if not results:
+            return HttpResponse("No food found")
+
+        #filters selected foods from all food 
+        food_ids = []
+        for f in results:
+            if f:
+                food_ids.append(int(f))
+        selected_foods = Food.objects.filter(pk__in=food_ids)
+
+        #returns foods as list items
+        return render(
+            request,
+            "partials/food_list.html",
+            {
+                "foods": selected_foods,
+            },
+        )
+
 
 class RecipeCreateView(CreateView):
     model = Recipe
     form_class = CreateRecipe
     success_url = reverse_lazy("recipe_list")
     template_name = "recipe_create.html"
-    context_object_name =  "recipe_data"
 
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
-    
-    def upload_file(self, request):
-        if request.method == "POST":
-            form = CreateRecipe(request.POST, request.DATA)
-        
-        if form.is_valid():
-            # file is saved
-            form.save()
-            return HttpResponseRedirect("recipe_list")
-        else:
-            form = CreateRecipe()
-        return render(request, "recipe_create.html", {"form": form})
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+
+        response = super().form_valid(form)
+
+        foods = self.request.POST.getlist("foods")
+        food_ids = []
+        for f in foods:
+            if f:
+                food_ids.append(int(f))
+
+        self.object.foods.set(food_ids)
+
+        return response
 
 class RecipeEditView(UpdateView):
     model = Recipe
@@ -106,65 +127,39 @@ class RecipeRatingView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class FoodList(ListView):
-    model = Food
-    template_name = "partial/api_search_bar.html"
-    context_object_name = "foods"
-
-    def get_queryset(self):
-        recipe = self.request.recipe
-        return recipe.foods.all() 
 
 
 def add_food(request):
-    new_food = search_food(request)[0]
+    foods = request.POST.getlist("foods")
 
-    request.foods.add(new_food)
+    results = search_food(request)
+    
+    if not results:
+        return HttpResponse("No food found")
 
-    foods = request.form.foods.all()
-    return render(request, "partials/food_list.html", {"foods": foods})
+    #gets or creates searched food
+    food = create_food_item(results[0])
 
-    #this is where to link to posts with model instance
-    if request.POST.getlist("foods"):
-        new_query = request.POST.copy()
-        new_query.setlist("foods", new_food)
-        request.POST = new_query
-        foods = new_query.getlist("foods")
-        return render(request, "partials/food_list.html", {"foods": foods})
-    else:
-        foods = request.POST.getlist("foods")
-        foods.append(new_food)
-        new_query = request.POST.copy()
-        new_query.setlist("foods", foods)
-        request.POST = new_query
-        foods = request.POST.getlist("foods")
-        return render(request, "partials/food_list.html", {"foods": foods})
+    #checks if food names in current form list
+    if str(food.pk) not in foods:
+        foods.append(str(food.pk))
 
-def food_create_inline(request):
-    if request.method == "POST":
-        new_food = search_food(request)
-        
-        recipe_form = CreateRecipe(
-            initial={
-                "foods":[new_food.pk]
-            }
-        )
-        print(recipe_form)
-        
-        return render(
-            request,
-            "partials/food_list.html",
-            {
-                "form": recipe_form,
-                
-            },
-        )
+    #filters selected foods from all food 
+    food_ids = []
+    for f in foods:
+        if f:
+            food_ids.append(int(f))
+    selected_foods = Food.objects.filter(pk__in=food_ids)
 
-   
+    #returns foods as list items
     return render(
         request,
-        "partials/api_search_bar.html",
+        "partials/food_list.html",
+        {
+            "foods": selected_foods,
+        },
     )
+
 
 def search_food(request):
     key = str(settings.DJANGO_SECRET_KEY)
@@ -175,44 +170,49 @@ def search_food(request):
     url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
 
     #pulls data from api
-    response = requests.get(url, headers=headers)
-    food_resp = response.json()["foods"]
+    response = requests.get(
+        url, 
+        headers=headers,
+        params={"query": food_req},
+        )
+    
+    response.raise_for_status()
     # get selected food json data from resp
-    food_json = food_resp[0]
-    new_food = create_food_item(food_json)
-
-    return new_food[0]
+    return response.json()["foods"]
 
 def create_food_item(food_json):
-    
     nutrients = food_json["foodNutrients"]
-    macros = [
-                ["protein", 1.0],
-                ["carb", 1.0],
-                ["fat", 1.0],
-                ["energy", 1.0],
-            ]
     
+    protein = 0
+    carbs = 0
+    fat = 0
+    calories = 0
+
     for nutrient in nutrients:
-        for macro in macros:
-            if macro[0] in nutrient["nutrientName"].lower():
-                macro[1] = nutrient["value"]
-    
-    new_food = Food.objects.get_or_create(
-                            name=food_json["description"], 
-                            proteins=float(macros[0][1]), 
-                            carbs=float(macros[1][1]), 
-                            fats=float(macros[2][1]), 
-                            calories=float(macros[3][1]),  
-                            base_serving=float(food_json["servingSize"]),
-                            base_unit=food_json["servingSizeUnit"],
-                        )
-    
-    
-    return new_food
+        name = nutrient["nutrientName"].lower()
 
-def delete_food(request, pk):
-    request.foods.remove(pk)
-    foods = request.foods.all()
-    return render(request, "partials/food_list.html", {"foods": foods})
+        if "protein" in name:
+            protein = nutrient["value"]
 
+        elif "carbohydrate" in name:
+            carbs = nutrient["value"]
+
+        elif "fat" in name:
+            fat = nutrient["value"]
+
+        elif "energy" in name:
+            calories = nutrient["value"]
+    
+    food, created = Food.objects.get_or_create(
+        name=food_json["description"],
+        defaults={
+            "proteins": protein,
+            "carbs": carbs,
+            "fats": fat,
+            "calories": calories,
+            "base_serving": food_json.get("servingSize", 0),
+            "base_unit": food_json.get("servingSizeUnit", ""),
+        },
+    )
+
+    return food
