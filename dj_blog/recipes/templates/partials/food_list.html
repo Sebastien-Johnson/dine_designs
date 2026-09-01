@@ -1,25 +1,42 @@
-    {% if foods %}
-        <ul>
-            {% for food in foods %}
-                <li>
-                    {{ food.name }}<br>
 
-                    Serving Size:
-                    {{ food.base_serving }}
-                    {{ food.base_unit }}<br>
+{% if foods %}
+    {% for food in foods %}
+        <div class="ingredient" id="food-{{ food.pk }}">
+            <strong>{{ food.name }}</strong>
 
-                    Proteins: {{ food.proteins }}<br>
-                    Carbs: {{ food.carbs }}<br>
-                    Fats: {{ food.fats }}<br>
+            <div>
+                Base serving:
+                {{ food.base_serving }} {{ food.base_unit }}
+            </div>
+            <!--- updates macros immediately off "change" trigger --->
+            <!--- posts input as "calc_food" property as value --->
+            <label>
+                Amount:
+                <input
+                    type="number"
+                    name="serving_size_{{ food.pk }}"
+                    value="{{ food.base_serving }}"
+                    hx-post="{% url 'calculate_food' food.pk %}"
+                    hx-trigger="change"
+                    hx-target="#nutrition-{{ food.pk }}"
+                >
+            </label>
 
-                    <input
-                        type="hidden"
-                        name="foods"
-                        value="{{ food.pk }}"
-                    >
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You do not have any ingredients in your list.</p>
-    {% endif %}
+            <input
+                type="hidden"
+                name="foods"
+                value="{{ food.pk }}"
+            >
+
+            <div id="nutrition-{{ food.pk }}">
+                Protein: {{ food.base_proteins }}
+                Carbs: {{ food.base_carbs }}
+                Fat: {{ food.base_fats }}
+                Calories: {{food.base_caloriess }}
+            </div>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No ingredients listed.</p>
+{% endif %}

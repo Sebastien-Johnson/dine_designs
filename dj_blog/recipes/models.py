@@ -6,17 +6,21 @@ from accounts.models import CustomUser
 #author
 class Food(models.Model):
     name = models.CharField(max_length=200)
-    proteins = models.FloatField(default=0)
-    carbs = models.FloatField(default=0)
-    fats = models.FloatField(default=0)
-    calories = models.FloatField(default=0)
+    base_proteins = models.FloatField(default=0)
+    base_carbs = models.FloatField(default=0)
+    base_fats = models.FloatField(default=0)
+    base_calories = models.FloatField(default=0)
     base_serving = models.FloatField(default=0) 
     base_unit = models.CharField(max_length=10, default="")
+
+
 
 class RecipeManager(models.Manager):
     def create_recipe(self, request):
         recipe = self.create(author=request.user)
         return recipe
+
+
 #book
 class Recipe(models.Model):
     title = models.CharField(max_length=100, default="")
@@ -30,7 +34,7 @@ class Recipe(models.Model):
     fats = models.FloatField(default=0)
     calories = models.FloatField(default=0)
     objects = RecipeManager()
-    foods = models.ManyToManyField(Food)
+    foods = models.ManyToManyField(Food, through="Ingredient")
     
 
     def __str__(self):
@@ -60,6 +64,41 @@ class Recipe(models.Model):
             self.carbs += food.carbs
             self.fats += food.fats
             self.calories += food.calories
+
+class Ingredient(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="ingredients"
+    )
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+
+    serving_size = models.FloatField(default=0)
+    serving_unit = models.CharField(max_length=10, default="")
+    #property allows the functions to be accessed directly as method-values
+    @property
+    def multiplier(self):
+        return self.serving_size / self.food.base_serving
+
+    @property
+    def proteins(self):
+        return self.food.base_proteins * self.multiplier
+
+    @property
+    def carbs(self):
+        return self.food.base_carbs * self.multiplier
+
+    @property
+    def fats(self):
+        return self.food.base_fats * self.multiplier
+
+    @property
+    def calories(self):
+        return (
+            self.proteins * 4
+            + self.carbs * 4
+            + self.fats * 9
+        )
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

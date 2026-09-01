@@ -12,7 +12,7 @@
 	{% else %}
 		<img src="{% static 'dj_blog/images/default_profile_pic.png' %}" width=100 height=100>
 	{% endif %}
-	{% if post.cover  %}
+	{% if recipe.cover  %}
     	<img src="{{ recipe.cover.url }}" width=100 height=100 alt="{{ recipe.title }}">
   	{% endif %}
 	</p>
@@ -34,21 +34,26 @@
   	
 
 	<p>Ingredients: </p>
-	{% with foods=recipe.foods.all %}
-		{% if foods %}
-			<ul>
-				{% for food in foods %}
-					<li>
-						{{ food.name }}<br>
-						Serving Size: {{ food.base_serving }} {{ food.base_unit }}<br>
-					</li>
-				{% endfor %}
-			</ul>
-		{% else %}
-			<p>No ingredients listed.</p>
-		{% endif %}
-	{% endwith %}
-	
+	{% if recipe.ingredients.all %}
+		{% for ingredient in recipe.ingredients.all %}
+			<div>
+				<strong>{{ ingredient.food.name }}</strong>
+
+				{{ ingredient.serving_size }}
+				{{ ingredient.serving_unit }}
+
+				<br>
+
+				Protein: {{ ingredient.proteins|floatformat:1 }}g<br>
+				Carbs: {{ ingredient.carbs|floatformat:1 }}g<br>
+				Fat: {{ ingredient.fats|floatformat:1 }}g<br>
+				Calories: {{ ingredient.calories|floatformat:0 }}
+			</div>
+		{% endfor %}
+	{% else %}
+		<p>No ingredients listed.</p>
+	{% endif %}
+
 	<p>Instructions: </p>
 	<p>{{ recipe.instructions }}</p>
 	

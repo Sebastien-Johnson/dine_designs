@@ -5,8 +5,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-er+1lzeorr!roqb(#ygfg@9uie8p34$dmv8mv%u%*%&w6!p91&"
-DJANGO_SECRET_KEY = yamjam()['myproject']['django_secret_key']
+SECRET_KEY = yamjam()['myproject']['dj_secret_key']
+USDA_API_KEY = yamjam()['myproject']['usda_api_key']
 DJANGO_DB_PW = yamjam()["myproject"]["django_db_pw"]
 DEBUG = True
 
@@ -39,7 +39,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "dine_designs.urls"
 
 TEMPLATES = [
-    {
+    {   
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,

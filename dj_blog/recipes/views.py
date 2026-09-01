@@ -1,12 +1,11 @@
 from django.views.generic import *
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Recipe, Comment, Rating, Food
+from .models import Recipe, Comment, Rating, Food, Ingredient
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic.list import ListView
-from django.core import serializers
 from django.conf import settings
 import requests
 
@@ -46,21 +45,32 @@ class RecipeDetailView(DetailView):
 class RecipeCreateView(CreateView):
     model = Recipe
     form_class = CreateRecipe
-    success_url = reverse_lazy("recipe_list")
     template_name = "recipe_create.html"
+    success_url = reverse_lazy("recipe_list")
 
     def form_valid(self, form):
         form.instance.author = self.request.user
 
         response = super().form_valid(form)
 
-        foods = self.request.POST.getlist("foods")
-        food_ids = []
-        for f in foods:
-            if f:
-                food_ids.append(int(f))
+        food_ids = self.request.POST.getlist("foods")
 
-        self.object.foods.set(food_ids)
+        for food_id in food_ids:
+            food = Food.objects.get(pk=food_id)
+            #gets final serving size from form
+            serving_size = float(
+                self.request.POST.get(
+                    f"serving_size_{food_id}",
+                    food.base_serving
+                )
+            )
+            #creates new ingredient obj from serving size
+            Ingredient.objects.create(
+                recipe=self.object,
+                food=food,
+                serving_size=serving_size,
+                serving_unit=food.base_unit,
+            )
 
         return response
 
@@ -162,7 +172,7 @@ def add_food(request):
 
 
 def search_food(request):
-    key = str(settings.DJANGO_SECRET_KEY)
+    key = str(settings.USDA_API_KEY)
     #get user input 
     food_req = request.POST["foodname"]
 
@@ -206,13 +216,38 @@ def create_food_item(food_json):
     food, created = Food.objects.get_or_create(
         name=food_json["description"],
         defaults={
-            "proteins": protein,
-            "carbs": carbs,
-            "fats": fat,
-            "calories": calories,
+            "base_proteins": protein,
+            "base_carbs": carbs,
+            "base_fats": fat,
+            "base_calories": calories,
             "base_serving": food_json.get("servingSize", 0),
             "base_unit": food_json.get("servingSizeUnit", ""),
         },
     )
 
     return food
+
+def calculate_food(request, food_id):
+    food = get_object_or_404(Food, pk=food_id)
+
+    serving_size = float(
+        request.POST.get(f"serving_size_{food_id}", food.base_serving)
+    )
+
+    multiplier = serving_size / food.base_serving
+
+    proteins = food.base_proteins * multiplier
+    carbs = food.base_carbs * multiplier
+    fats = food.base_fats * multiplier
+    calories = proteins * 4 + carbs * 4 + fats * 9
+
+    return render(
+        request,
+        "partials/food_nutrition.html",
+        {
+            "proteins": proteins,
+            "carbs": carbs,
+            "fats": fats,
+            "calories": calories,
+        },
+    )
