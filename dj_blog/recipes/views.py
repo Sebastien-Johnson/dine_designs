@@ -187,6 +187,7 @@ def search_food(request):
         )
     
     response.raise_for_status()
+    print(response.json())
     # get selected food json data from resp
     return response.json()["foods"]
 
@@ -251,3 +252,7 @@ def calculate_food(request, food_id):
             "calories": calories,
         },
     )
+
+def remove_food(request, food_id):
+    """Removes food from creation form, maintains obj in db """
+    return HttpResponse("")
