@@ -1,24 +1,24 @@
 <div id="api_search_bar">
-    <p>My Ingredients</p>
+    <!-- searches every time input changes on 500ms delay -->
+   <label for="food-search">
+        Search for an ingredient
+    </label>
 
     <input
+        id="food-search"
         type="text"
         name="foodname"
-        class="form-control-sm mr-2"
-        placeholder="Enter Ingredient Name"
-    />
-
-    <!-- hx-include keeps all previous hidden inputs -->
-    <button
-        hx-post="{% url 'add_food' %}"
-        hx-target="#food_list"
-        hx-swap="innerHTML"
-        hx-include="#food_list input[name='foods']"
-        type="button"
-        class="btn btn-success btn-sm"
+        class="form-control"
+        placeholder="Enter ingredient name"
+        hx-get="{% url 'search_food' %}"
+        hx-trigger="keyup changed delay:500ms"
+        hx-target="#food-results"
+        autocomplete="off"
     >
-        Add Ingredient
-    </button>
+
+    <div id="food-results">
+        {% include "partials/food_search_results.html" %}
+    </div>
 </div>
 
 <!-- post food obj -->

@@ -1,53 +1,55 @@
 {% if foods %}
     <br>
-    {% for food in foods %}
-        <div class="ingredient" id="food-{{ food.pk }}">
-            <strong>{{ food.name }}</strong>
+    <ul>
+        {% for food in foods %}
+            <div class="ingredient" id="food-{{ food.pk }}">
+                <strong>{{ food.name }}</strong>
 
-            <div>
-                Base serving:
-                {{ food.base_serving }} {{ food.base_unit }}
-            </div>
-            <!--- updates macros immediately off "change" trigger --->
-            <!--- posts input as "calc_food" property as value --->
-            <label>
-                Amount:
+                <div>
+                    Base serving:
+                    {{ food.base_serving }} {{ food.base_unit }}
+                </div>
+                <!--- updates macros immediately off "change" trigger --->
+                <!--- posts input as "calc_food" property as value --->
+                <label>
+                    Amount:
+                    <input
+                        type="number"
+                        name="serving_size_{{ food.pk }}"
+                        value="{{ food.base_serving }}"
+                        hx-post="{% url 'calculate_food' food.pk %}"
+                        hx-trigger="change"
+                        hx-target="#nutrition-{{ food.pk }}"
+                    >
+                </label>
+
                 <input
-                    type="number"
-                    name="serving_size_{{ food.pk }}"
-                    value="{{ food.base_serving }}"
-                    hx-post="{% url 'calculate_food' food.pk %}"
-                    hx-trigger="change"
-                    hx-target="#nutrition-{{ food.pk }}"
+                    type="hidden"
+                    name="foods"
+                    value="{{ food.pk }}"
                 >
-            </label>
 
-            <input
-                type="hidden"
-                name="foods"
-                value="{{ food.pk }}"
-            >
+                <!-- target inputs of food calc-->
+                <div id="nutrition-{{ food.pk }}">
+                    Protein: {{ food.base_proteins }} g |
+                    Carbs: {{ food.base_carbs }} g |
+                    Fat: {{ food.base_fats }} g |
+                    Calories: {{food.base_calories }} cal
+                </div>
+                
+                <!-- delete button -->
+                <button
+                    type="button"
+                    hx-post="{% url 'remove_food' food.pk %}"
+                    hx-target="#food-{{ food.pk }}"
+                    hx-swap="outerHTML"
+                >
+                    Delete food
+            </button>
 
-            <!-- target inputs of food calc-->
-            <div id="nutrition-{{ food.pk }}">
-                Protein: {{ food.base_proteins }}
-                Carbs: {{ food.base_carbs }}
-                Fat: {{ food.base_fats }}
-                Calories: {{food.base_caloriess }}
             </div>
-            
-            <!-- delete button -->
-            <button
-                type="button"
-                hx-post="{% url 'remove_food' food.pk %}"
-                hx-target="#food-{{ food.pk }}"
-                hx-swap="outerHTML"
-            >
-                Delete food
-        </button>
-
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </ul>
 {% else %}
     <p>No ingredients listed.</p>
 {% endif %}

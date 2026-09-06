@@ -1,13 +1,13 @@
 from django.views.generic import *
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe, Comment, Rating, Food, Ingredient
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic.list import ListView
 from django.conf import settings
-import requests
+import requests, json
 
 
 class RecipeListView(ListView):
@@ -40,7 +40,6 @@ class RecipeDetailView(DetailView):
                 "foods": selected_foods,
             },
         )
-
 
 class RecipeCreateView(CreateView):
     model = Recipe
@@ -137,92 +136,123 @@ class RecipeRatingView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-
-
 def add_food(request):
-    foods = request.POST.getlist("foods")
+    """ gets or creates food for recipe creation form """
+    fdc_id = request.POST.get("fdc_id")
 
-    results = search_food(request)
-    
-    if not results:
-        return HttpResponse("No food found")
+    if not fdc_id:
+        return HttpResponseBadRequest("No food selected.")
+    #retrieves single food via fdc_id
+    url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}"
+
+    params = {
+        "api_key": settings.USDA_API_KEY,
+    }
+
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    food_json = response.json()
 
     #gets or creates searched food
-    food = create_food_item(results[0])
+    food = create_food_item(food_json)
+
+    #gets existing list of form's foods
+    food_ids = [
+        food_id
+        for food_id in request.POST.getlist("foods")
+        if food_id
+    ]
 
     #checks if food names in current form list
-    if str(food.pk) not in foods:
-        foods.append(str(food.pk))
+    if str(food.pk) not in food_ids:
+        food_ids.append(str(food.pk))
 
-    #filters selected foods from all food 
-    food_ids = []
-    for f in foods:
-        if f:
-            food_ids.append(int(f))
-    selected_foods = Food.objects.filter(pk__in=food_ids)
+    #filters selected foods from all food
+    foods = Food.objects.filter(pk__in=food_ids)
 
     #returns foods as list items
     return render(
         request,
         "partials/food_list.html",
         {
-            "foods": selected_foods,
+            "foods": foods,
         },
     )
 
 
 def search_food(request):
-    key = str(settings.USDA_API_KEY)
-    #get user input 
-    food_req = request.POST["foodname"]
+    """ gets list of foods for drop down menu """
+    food_req = request.GET.get("foodname", "").strip()
 
-    headers={"x-api-key":key}
-    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={food_req}"
-
-    #pulls data from api
-    response = requests.get(
-        url, 
-        headers=headers,
-        params={"query": food_req},
+    if not food_req:
+        return render(
+            request,
+            "partials/food_search_results.html",
+            {"foods": []},
         )
-    
+    # retrieves list of foods via name (description)
+    url = "https://api.nal.usda.gov/fdc/v1/foods/search"
+
+    params = {
+        "api_key": settings.USDA_API_KEY,
+        "query": food_req,
+        "pageSize": 25,
+    }
+
+    response = requests.get(url, params=params)
     response.raise_for_status()
-    print(response.json())
-    # get selected food json data from resp
-    return response.json()["foods"]
+
+    results = response.json().get("foods", [])
+
+    return render(
+        request,
+        "partials/food_search_results.html",
+        {"foods": results},
+    )
 
 def create_food_item(food_json):
-    nutrients = food_json["foodNutrients"]
-    
-    protein = 0
+    """ gets or creates food item """
+    foodNutrients = food_json.get("foodNutrients", [])
+
+    print(json.dumps(food_json, indent=4))
+
+    proteins = 0
     carbs = 0
-    fat = 0
+    fats = 0
     calories = 0
 
-    for nutrient in nutrients:
-        name = nutrient["nutrientName"].lower()
+    for nutrient in foodNutrients:
+        name = nutrient["nutrient"]["name"]
 
-        if "protein" in name:
-            protein = nutrient["value"]
+        if "Protein" in name:
+            proteins = nutrient["amount"]
 
-        elif "carbohydrate" in name:
-            carbs = nutrient["value"]
+        elif "Carbohydrate, by difference" in name:
+            carbs = nutrient["amount"]
 
-        elif "fat" in name:
-            fat = nutrient["value"]
+        elif "Total lipid (fat)" in name:
+            fats = nutrient["amount"]
 
-        elif "energy" in name:
-            calories = nutrient["value"]
+        elif "Energy" in name:
+            calories = nutrient["amount"]
+
+    name = ""
+    if "brandName" in food_json:
+        name = (food_json["description"]+", "+food_json["brandName"]).title()
+    else:
+        name=(food_json["description"]).title()
+
     
     food, created = Food.objects.get_or_create(
-        name=food_json["description"],
+        name=name,
         defaults={
-            "base_proteins": protein,
+            "base_proteins": proteins,
             "base_carbs": carbs,
-            "base_fats": fat,
+            "base_fats": fats,
             "base_calories": calories,
-            "base_serving": food_json.get("servingSize", 0),
-            "base_unit": food_json.get("servingSizeUnit", ""),
+            "base_serving": food_json.get("servingSize", 100),
+            "base_unit": food_json.get("servingSizeUnit", "g"),
         },
     )
 

@@ -94,11 +94,7 @@ class Ingredient(models.Model):
 
     @property
     def calories(self):
-        return (
-            self.proteins * 4
-            + self.carbs * 4
-            + self.fats * 9
-        )
+        return self.food.base_calories * self.multiplier
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
