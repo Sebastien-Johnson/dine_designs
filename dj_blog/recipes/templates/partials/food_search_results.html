@@ -14,11 +14,12 @@
     </select>
 
     <!-- takes selected food and creates with "add_food" view -->
+    <!-- includes/populates 2 different htmx targets -->
     <button
         type="button"
         class="btn btn-success mt-2"
         hx-post="{% url 'add_food' %}"
-        hx-include="#food-select"
+        hx-include="#food-select, #food_list input[name='foods']"
         hx-target="#food_list"
         hx-swap="innerHTML"
     >

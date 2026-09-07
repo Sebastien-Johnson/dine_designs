@@ -3,38 +3,89 @@
 {% block title %}Edit Recipe{% endblock %}
 
 {% block content %}
-<div>
-	{% if request.user.is_authenticated and request.user == recipe.author %}
-		<h2>Edit Recipe</h2>
-			<form method="POST" enctype="multipart/form-data">
-				{% csrf_token %}
-				{{ form.as_p }}
-				<button type="submit">Save</button>
-			</form>
-			
-			<form method="GET">
-				{% csrf_token %}
-				<button type="submit", formaction="{% url 'recipe_confirm_delete' recipe.pk %}">Delete Recipe</button>
-			</form>
 
-			<script>
-				var name = "{{user.id}}";
-				document.getElementById("author_name_field").value = name;
-			</script>
+{% if request.user.is_authenticated and request.user == recipe.author %}
 
-			<form method="GET">
-				<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
-			</form>
-	{% elif request.user.is_authenticated %}
-		<h2>Only the recipe's chef can edit!</h2>
-		<form method="GET">
-			<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
-		</form>
-  	{% else %}
-		<p>Please login to edit recipes</p>
-		<form method="GET">
-			<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-		</form>
-  	{% endif %}
-</div>
+    <h2>Edit Recipe</h2>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% url 'recipe_edit' recipe.pk %}"
+    >
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <hr>
+		<h3>Add Ingredients </h3>
+        <!-- USDA search -->
+        	{% include "partials/api_search_bar.html" %}
+        <br>
+
+        <h3>Ingredients</h3>
+
+        <!-- Existing recipe ingredients -->
+        <div id="food_list">
+            {% include "partials/food_list.html" with foods=recipe.foods.all %}
+        </div>
+		
+
+        <button type="submit">
+            Save Recipe
+        </button>
+    </form>
+
+
+    <hr>
+
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'recipe_confirm_delete' recipe.pk %}"
+        >
+            Delete Recipe
+        </button>
+    </form>
+
+
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'recipe_list' %}"
+        >
+            Return Home
+        </button>
+    </form>
+
+
+{% elif request.user.is_authenticated %}
+
+    <h2>Only the recipe's chef can edit!</h2>
+
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'recipe_list' %}"
+        >
+            Return Home
+        </button>
+    </form>
+
+
+{% else %}
+
+    <p>Please login to edit recipes</p>
+
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'log_auth' %}"
+        >
+            Login/Signup
+        </button>
+    </form>
+
+{% endif %}
+
 {% endblock %}

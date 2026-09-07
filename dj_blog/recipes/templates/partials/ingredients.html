@@ -1,0 +1,19 @@
+{% if recipe.ingredients.all %}
+    {% for ingredient in recipe.ingredients.all %}
+        <div>
+            <strong>{{ ingredient.food.name }}</strong>
+
+            {{ ingredient.serving_size }}
+            {{ ingredient.serving_unit }}
+
+            <br>
+
+            Protein: {{ ingredient.proteins|floatformat:1 }}g<br>
+            Carbs: {{ ingredient.carbs|floatformat:1 }}g<br>
+            Fat: {{ ingredient.fats|floatformat:1 }}g<br>
+            Calories: {{ ingredient.calories|floatformat:0 }}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No ingredients listed.</p>
+{% endif %}

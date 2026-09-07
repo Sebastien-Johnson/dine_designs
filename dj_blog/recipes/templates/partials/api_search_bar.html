@@ -10,19 +10,17 @@
         name="foodname"
         class="form-control"
         placeholder="Enter ingredient name"
+
         hx-get="{% url 'search_food' %}"
         hx-trigger="keyup changed delay:500ms"
-        hx-target="#food-results"
-        autocomplete="off"
+        hx-target="#food_search_results"
+        hx-swap="innerHTML"
     >
 
-    <div id="food-results">
-        {% include "partials/food_search_results.html" %}
+    <div id="food_search_results">
+        {% include "partials/food_search_results.html"  %}
     </div>
 </div>
 
-<!-- post food obj -->
-<div id="food_list">
-    {% include "partials/food_list.html" %}
-</div>
+
 

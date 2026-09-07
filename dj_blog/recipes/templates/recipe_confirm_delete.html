@@ -9,8 +9,8 @@
   {% csrf_token %}
 	<p>Are you sure that you want to delete the recipe "{{recipe.title}}"?</p>
 	<div>
-		<button type="submit", formaction="{% url 'recipe_confirm_delete' post.pk %}">Delete Recipe</button>
-		<button type="submit", formaction="{% url 'recipe_detail' post.pk %}">Cancel</button>
+		<button type="submit", formaction="{% url 'recipe_confirm_delete' recipe.pk %}">Delete Recipe</button>
+		<button type="submit", formaction="{% url 'recipe_detail' recipe.pk %}">Cancel</button>
 	</div>
 </form>
 

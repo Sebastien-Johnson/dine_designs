@@ -17,11 +17,17 @@
   	{% endif %}
 	</p>
 	
-	<p>Chef: {{ recipe.author }}
+	<div>
+		Chef: {{ recipe.author }}
+		{% if recipe.author.id == request.user.id%}
+		<form method="GET">
+			<button type="submit", formaction="{% url 'recipe_edit' recipe.pk %}">Edit Recipe</button>
+		</form>
+  		{% endif %}
 		{% if recipe.author.profile %}
 			<a href="{% url 'show_profile_page' recipe.author.profile.id %}">(Profile Page)</a>
 		{% endif %}
-	</p>
+	</div>
   	<p>Published: {{ recipe.published }}</p>
   	<p>Rating: {{ recipe.get_rating }}/5.0 ☆ ( {{ recipe.get_review_count }} )</p>
 
@@ -30,38 +36,15 @@
 			<button type="submit", formaction="{% url 'recipe_rating' recipe.pk %}">Rate Recipe</button>
 		</form>
   	{% endif %}
-
-  	
-
-	<p>Ingredients: </p>
-	{% if recipe.ingredients.all %}
-		{% for ingredient in recipe.ingredients.all %}
-			<div>
-				<strong>{{ ingredient.food.name }}</strong>
-
-				{{ ingredient.serving_size }}
-				{{ ingredient.serving_unit }}
-
-				<br>
-
-				Protein: {{ ingredient.proteins|floatformat:1 }}g<br>
-				Carbs: {{ ingredient.carbs|floatformat:1 }}g<br>
-				Fat: {{ ingredient.fats|floatformat:1 }}g<br>
-				Calories: {{ ingredient.calories|floatformat:0 }}
-			</div>
-		{% endfor %}
-	{% else %}
-		<p>No ingredients listed.</p>
-	{% endif %}
+	
+  	<div id="ingredients">
+            {% include "partials/ingredients.html" with foods=recipe.foods.all %}
+    </div>
+	
 
 	<p>Instructions: </p>
 	<p>{{ recipe.instructions }}</p>
 	
-	{% if recipe.author.id == request.user.id%}
-		<form method="GET">
-			<button type="submit", formaction="{% url 'recipe_edit' recipe.pk %}">Edit Recipe</button>
-		</form>
-  	{% endif %}
 
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>

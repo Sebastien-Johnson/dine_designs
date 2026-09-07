@@ -52,7 +52,11 @@ class RecipeCreateView(CreateView):
 
         response = super().form_valid(form)
 
-        food_ids = self.request.POST.getlist("foods")
+        food_ids = [
+                food_id
+                for food_id in self.request.POST.getlist("foods")
+                if food_id
+            ]
 
         for food_id in food_ids:
             food = Food.objects.get(pk=food_id)
@@ -79,22 +83,26 @@ class RecipeEditView(UpdateView):
     success_url = reverse_lazy("recipe_list")
     template_name = "recipe_edit.html"
 
-    def edit_recipe(request, pk):
-        recipe = get_object_or_404(Recipe, pk=pk)
+    def form_valid(self, form):
+        # Save title, instructions, cover, etc.
+        response = super().form_valid(form)
 
-        if request.method == "GET":
-            context = {"form": CreateRecipe(instance=recipe), "pk": pk}
-            return render(request,"post_edit.html", context)
+        # Get the foods submitted by the hidden inputs
+        food_ids = [
+            food_id
+            for food_id in self.request.POST.getlist("foods")
+            if food_id
+        ]
 
-        elif request.method == "POST":
-            form = CreateRecipe(request.POST, instance=recipe)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "The recipe has been updated successfully.")
-                return redirect("recipe_list")
-            else:
-                messages.error(request, "Please correct the following errors:")
-                return render(request,"recipe_edit.html",{"form":form})
+        # Update the recipe's ManyToMany relationship
+        self.object.foods.set(food_ids)
+
+        messages.success(
+            self.request,
+            "The recipe has been updated successfully."
+        )
+
+        return response
 
 class RecipeDeleteView(DeleteView):
     model = Recipe
