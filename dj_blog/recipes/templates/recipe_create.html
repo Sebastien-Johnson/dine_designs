@@ -18,7 +18,9 @@
 			</section>
 			
 			<input type="hidden" name="foods" value="{{ food.pk }}">
-			
+			<div id="food_list">
+            	{% include "partials/food_list.html" with foods=recipe.foods.all %}
+        	</div>
 			<hr/>
 			<button type="submit">Post Recipe</button>
 		</form>

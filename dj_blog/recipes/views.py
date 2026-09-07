@@ -45,7 +45,7 @@ class RecipeCreateView(CreateView):
     model = Recipe
     form_class = CreateRecipe
     template_name = "recipe_create.html"
-    success_url = reverse_lazy("recipe_list")
+    success_url = reverse_lazy("recipe_detail")
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -80,7 +80,7 @@ class RecipeCreateView(CreateView):
 class RecipeEditView(UpdateView):
     model = Recipe
     form_class = CreateRecipe
-    success_url = reverse_lazy("recipe_list")
+    success_url = reverse_lazy("recipe_detail")
     template_name = "recipe_edit.html"
 
     def form_valid(self, form):
