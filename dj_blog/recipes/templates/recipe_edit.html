@@ -20,14 +20,14 @@
         <hr>
 		<h3>Add Ingredients </h3>
         <!-- USDA search -->
-        	{% include "partials/api_search_bar.html" %}
+        	{% include "partials/api_search_bar_edit.html" %}
         <br>
 
         <h3>Ingredients</h3>
 
         <!-- Existing recipe ingredients -->
         <div id="food_list">
-            {% include "partials/food_list.html" with foods=recipe.foods.all %}
+            {% include "partials/food_list_edit.html" with ingredients=recipe.ingredients.all %}
         </div>
 		
 

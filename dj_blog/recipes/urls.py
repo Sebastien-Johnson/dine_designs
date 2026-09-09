@@ -15,8 +15,10 @@ htmx_urlpatterns = [
     path("recipe_create/", RecipeCreateView.as_view(), name="recipe_create"),
     path("recipe_create/<int:food_id>/remove_food/", remove_food, name="remove_food"),
     path("add_food/", add_food, name="add_food"),
+    path("<int:recipe_id>/recipe_edit/add_food_edit/", add_food_edit, name="add_food_edit",),
     path("search_food/", search_food, name="search_food"),
-    path("recipe_create/<int:food_id>/calulate_food/", calculate_food, name="calculate_food")
+    path("search_food_edit/<int:recipe_id>/", search_food_edit, name="search_food_edit"),
+    path("recipe_create/<int:food_id>/calculate_food/", calculate_food, name="calculate_food")
 ]
 
 urlpatterns += htmx_urlpatterns

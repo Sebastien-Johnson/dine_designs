@@ -36,7 +36,6 @@ class Recipe(models.Model):
     objects = RecipeManager()
     foods = models.ManyToManyField(Food, through="Ingredient")
     
-
     def __str__(self):
         return f"{self.title}, by {str(self.author)} ({self.average_rating()}/5★)"
 
@@ -59,12 +58,14 @@ class Recipe(models.Model):
         return len(self.get_all_reviewers())
 
     def compile_macros(self):
-        for food in self.foods:
-            self.proteins += food.proteins
-            self.carbs += food.carbs
-            self.fats += food.fats
-            self.calories += food.calories
+        ing = self.ingredients.all()
+        for i in ing:
+            self.proteins += i.proteins
+            self.carbs += i.carbs
+            self.fats += i.fats
+            self.calories += i.calories
 
+        return ""
 class Ingredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
@@ -78,23 +79,23 @@ class Ingredient(models.Model):
     #property allows the functions to be accessed directly as method-values
     @property
     def multiplier(self):
-        return self.serving_size / self.food.base_serving
+        return (self.serving_size / self.food.base_serving)
 
     @property
     def proteins(self):
-        return self.food.base_proteins * self.multiplier
+        return round((self.food.base_proteins * self.multiplier), 1)
 
     @property
     def carbs(self):
-        return self.food.base_carbs * self.multiplier
+        return round((self.food.base_carbs * self.multiplier), 1)
 
     @property
     def fats(self):
-        return self.food.base_fats * self.multiplier
+        return round((self.food.base_fats * self.multiplier), 1)
 
     @property
     def calories(self):
-        return self.food.base_calories * self.multiplier
+        return round((self.food.base_calories * self.multiplier), 1)
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

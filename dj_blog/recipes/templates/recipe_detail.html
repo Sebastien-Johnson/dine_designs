@@ -36,13 +36,20 @@
 			<button type="submit", formaction="{% url 'recipe_rating' recipe.pk %}">Rate Recipe</button>
 		</form>
   	{% endif %}
-	
+
+	<h3>Macros: </h3>
+	{{ recipe.compile_macros }} 
+	Proteins: {{ recipe.proteins }} g <br>
+	Carbs: {{ recipe.carbs }} g <br>
+	Fats: {{ recipe.fats }} g <br>
+	Calories: {{ recipe.calories}} cal <br>
+
   	<div id="ingredients">
             {% include "partials/ingredients.html" with foods=recipe.foods.all %}
     </div>
 	
 
-	<p>Instructions: </p>
+	<h3>Instructions: </h3>
 	<p>{{ recipe.instructions }}</p>
 	
 

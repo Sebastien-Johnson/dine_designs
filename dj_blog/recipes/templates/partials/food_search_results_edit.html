@@ -1,0 +1,32 @@
+{% if foods %}
+    <select
+        id="food-select"
+        name="fdc_id"
+        size="8"
+        class="form-control"
+    >
+        {% for food in foods %}
+            <option value="{{ food.fdcId }}">
+                {{ food.description.title }}, {{ food.brandName.title }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <!-- hx-include saves each item starting with serving_size, updates to db -->
+    <button
+        type="button"
+        class="btn btn-success mt-2"
+
+        hx-post="{% url 'add_food_edit' recipe.pk %}"
+        
+        hx-include="#food-select, #food_list input[name='foods'], #food_list input[name^='serving_size_'], [name='csrfmiddlewaretoken']"
+
+        hx-target="#food_list"
+        hx-swap="innerHTML"
+    >
+        Add Ingredient
+    </button>
+
+{% elif request.GET.foodname %}
+    <p>No foods found.</p>
+{% endif %}

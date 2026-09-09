@@ -1,0 +1,83 @@
+{% if ingredients %}
+    <br>
+
+    <ul>
+        {% for ingredient in ingredients %}
+
+            <div
+                class="ingredient"
+                id="food-{{ ingredient.food.pk }}"
+            >
+
+                <strong>
+                    {{ ingredient.food.name }}
+                </strong>
+
+                <div>
+                    Base serving:
+                    {{ ingredient.food.base_serving }}
+                    {{ ingredient.food.base_unit }}
+                </div>
+
+                <label>
+                    Amount:
+
+                    <input
+                        type="number"
+                        name="serving_size_{{ ingredient.food.pk }}"
+                        value="{{ ingredient.serving_size }}"
+                        step="0.1"
+                        min="0"
+
+                        hx-post="{% url 'calculate_food' ingredient.food.pk %}"
+                        hx-trigger="change"
+                        hx-target="#nutrition-{{ ingredient.food.pk }}"
+                    >
+
+                    {{ ingredient.serving_unit }}
+                </label>
+
+                <!-- Recipe/food relationship -->
+                <input
+                    type="hidden"
+                    name="foods"
+                    value="{{ ingredient.food.pk }}"
+                >
+
+                <!-- Calculated nutrition -->
+                <div id="nutrition-{{ ingredient.food.pk }}">
+
+                    Protein:
+                    {{ ingredient.proteins }} g |
+
+                    Carbs:
+                    {{ ingredient.carbs }} g |
+
+                    Fat:
+                    {{ ingredient.fats }} g |
+
+                    Calories:
+                    {{ ingredient.calories }} cal
+
+                </div>
+
+                <!-- Delete ingredient -->
+                <button
+                    type="button"
+                    hx-post="{% url 'remove_food' ingredient.food.pk %}"
+                    hx-target="#food-{{ ingredient.food.pk }}"
+                    hx-swap="outerHTML"
+                >
+                    Delete food
+                </button>
+
+            </div>
+
+        {% endfor %}
+    </ul>
+
+{% else %}
+
+    <p>No ingredients listed.</p>
+
+{% endif %}
