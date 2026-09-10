@@ -1,9 +1,9 @@
 <div id="api_search_bar">
-    <!-- searches every time input changes on 500ms delay -->
-   <label for="food-search">
+    
+    <label for="food-search">
         Search for an ingredient
     </label>
-
+    <!-- input field for search bar -->
     <input
         id="food-search"
         type="text"
@@ -12,15 +12,13 @@
         placeholder="Enter ingredient name"
 
         hx-get="{% url 'search_food' %}"
-        hx-trigger="keyup changed delay:500ms"
+        hx-trigger="keyup changed delay:500ms" 
         hx-target="#food_search_results"
         hx-swap="innerHTML"
     >
-
+    <!-- pipes query response to drop down -->
     <div id="food_search_results">
-        {% include "partials/food_search_results.html"  %}
+        {% include "partials/food_search_results.html" %}
     </div>
+
 </div>
-
-
-

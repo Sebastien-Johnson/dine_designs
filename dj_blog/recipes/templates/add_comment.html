@@ -3,9 +3,12 @@
 {% block title %}Comment on recipe{% endblock %}
 
 {% block content %}
+
 {% if request.user.is_authenticated %}
+
     <h2>Add Comment</h2>
-        <form method="POST" enctype="multipart/form-data">
+
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Post</button>
@@ -14,10 +17,15 @@
     <form method="GET">
         <button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
     </form>
+
 {% else %}
+
     <p>Please login to create new recipes</p>
+
     <form method="GET">
         <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
     </form>
+
 {% endif %}
+
 {% endblock %}

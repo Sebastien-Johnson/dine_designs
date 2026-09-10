@@ -1,11 +1,15 @@
 {% extends "base.html" %}
+
 {% load static %}
 
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
+
 <h1>{{page_user}}'s Kitchen</h1>
+
 <div>
+
 	{% if page_user.profile_pic %}
 		<img src="{{ page_user.profile_pic.url }}" width=100 height=100>
 	{% else %}
@@ -27,26 +31,42 @@
 	{% if page_user.delaypound_url %}
 		| <a href="{{page_user.delaypound_url}}">Delaypound</a>
 	{% endif %}
+
 </div>
+
 {% if page_user.user.id == request.user.id %}
+
 	<div class="form-group">
+
 		<form method="GET">
 			<button type="submit", formaction="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</button>
 		</form>
+
 	</div>
+
 {% endif %}
+
 <div>
+
 	<h3>About me: {{ page_user.bio }}</h3>
 	<h3>Chef {{page_user}}'s Recipes</h3>
+
 	{% for post in page_user.user.recipes.all %}
+
 		<div>
 			<h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
 		</div>
+
 	{% endfor %}
+
 </div>
+
 <div class="form-group">
+
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
 	</form>
+
 </div>
+
 {% endblock %}

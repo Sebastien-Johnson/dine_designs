@@ -7,25 +7,30 @@
         class="form-control"
     >
         {% for food in foods %}
+
             <option value="{{ food.fdcId }}">
                 {{ food.description.title }}, {{ food.brandName.title }}
             </option>
-        {% endfor %}
-    </select>
 
+        {% endfor %}
+
+    </select>
     <!-- takes selected food and creates with "add_food" view -->
-    <!-- includes/populates 2 different htmx targets -->
+    <!-- includes new food from "select", and existing foods in target food_list -->
     <button
         type="button"
         class="btn btn-success mt-2"
+
         hx-post="{% url 'add_food' %}"
         hx-include="#food-select, #food_list input[name='foods']"
         hx-target="#food_list"
         hx-swap="innerHTML"
-    >
+    > 
         Add Ingredient
     </button>
 
 {% elif request.GET.foodname %}
+
     <p>No foods found.</p>
+    
 {% endif %}

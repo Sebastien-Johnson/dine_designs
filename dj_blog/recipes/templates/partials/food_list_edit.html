@@ -2,6 +2,7 @@
     <br>
 
     <ul>
+        
         {% for ingredient in ingredients %}
 
             <div
@@ -44,7 +45,7 @@
                     value="{{ ingredient.food.pk }}"
                 >
 
-                <!-- Calculated nutrition -->
+                <!-- calc food output -->
                 <div id="nutrition-{{ ingredient.food.pk }}">
 
                     Protein:
@@ -61,7 +62,6 @@
 
                 </div>
 
-                <!-- Delete ingredient -->
                 <button
                     type="button"
                     hx-post="{% url 'remove_food' ingredient.food.pk %}"

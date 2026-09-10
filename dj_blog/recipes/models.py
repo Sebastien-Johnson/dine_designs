@@ -3,8 +3,8 @@ from datetime import date
 from django.db.models import Avg
 from accounts.models import CustomUser 
 
-#author
 class Food(models.Model):
+    """ Food model, generated via USDA api query. """
     name = models.CharField(max_length=200)
     base_proteins = models.FloatField(default=0)
     base_carbs = models.FloatField(default=0)
@@ -13,16 +13,14 @@ class Food(models.Model):
     base_serving = models.FloatField(default=0) 
     base_unit = models.CharField(max_length=10, default="")
 
-
-
 class RecipeManager(models.Manager):
+    """ Recipe manager. Used for self creation. """
     def create_recipe(self, request):
         recipe = self.create(author=request.user)
         return recipe
 
-
-#book
 class Recipe(models.Model):
+    """ User recipe or 'post' model """
     title = models.CharField(max_length=100, default="")
     author = models.ForeignKey(CustomUser, related_name="recipes", on_delete=models.CASCADE, default=None)
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
@@ -66,7 +64,12 @@ class Recipe(models.Model):
             self.calories += i.calories
 
         return ""
+    
 class Ingredient(models.Model):
+    """ 
+    Ingredient model: FKs on Recipes & Food. 
+    Maintains own set of nutrition values to be adjusted.
+    """
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -76,6 +79,7 @@ class Ingredient(models.Model):
 
     serving_size = models.FloatField(default=0)
     serving_unit = models.CharField(max_length=10, default="")
+
     #property allows the functions to be accessed directly as method-values
     @property
     def multiplier(self):
@@ -98,6 +102,7 @@ class Ingredient(models.Model):
         return round((self.food.base_calories * self.multiplier), 1)
 
 class Rating(models.Model):
+    """ Recipe rating model. FKs on Users & Recipes """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
@@ -109,6 +114,7 @@ class Rating(models.Model):
         unique_together = ('recipe','user')
 
 class Comment(models.Model):
+    """ User comment model """
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="comments")
     name = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=None, related_name="comments")
     body = models.TextField()

@@ -9,7 +9,9 @@
 </head>
 
 <body>
+
 	<main>
+		
 		{% block content %}
 		{% endblock %}
 		<script>
@@ -17,7 +19,9 @@
 				event.detail.headers['X-CSRFToken'] = "{{ csrf_token }}"; 
 			})
 		</script>
+
 	</main>
+
 </body>
 
 </html>

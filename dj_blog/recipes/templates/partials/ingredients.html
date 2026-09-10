@@ -1,14 +1,20 @@
 {% if recipe.ingredients.all %}
+
     <h3>Ingredients</h3>
+
     {% for ingredient in recipe.ingredients.all %}
+
         <div>
             {{ ingredient.food.name }}: 
             {{ ingredient.serving_size }}
             {{ ingredient.serving_unit }}
-
             <br>
         </div>
+
     {% endfor %}
+
 {% else %}
+
     <p>No ingredients listed.</p>
+    
 {% endif %}

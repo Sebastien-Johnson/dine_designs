@@ -1,40 +1,56 @@
 {% extends "base.html" %}
+
 {% load static %}
 
 {% block title %}Recipe Details{% endblock %}
 
 {% block content %}
+
 <h1>{{recipe.author}}'s {{ recipe.title }}</h1>
+
 <div>
+
 	<p>
 	{% if recipe.author.profile.profile_pic %}
 		<img src="{{ recipe.author.profile.profile_pic.url }}" width=100 height=100>
 	{% else %}
 		<img src="{% static 'images/default_pfp.png' %}" width=100 height=100>
 	{% endif %}
+
 	{% if recipe.cover  %}
     	<img src="{{ recipe.cover.url }}" width=100 height=100 alt="{{ recipe.title }}">
   	{% endif %}
 	</p>
 	
 	<div>
+
 		Chef: {{ recipe.author }}
+
 		{% if recipe.author.id == request.user.id%}
-		<form method="GET">
-			<button type="submit", formaction="{% url 'recipe_edit' recipe.pk %}">Edit Recipe</button>
-		</form>
+
+			<form method="GET">
+				<button type="submit", formaction="{% url 'recipe_edit' recipe.pk %}">Edit Recipe</button>
+			</form>
+
   		{% endif %}
+
 		{% if recipe.author.profile %}
+
 			<a href="{% url 'show_profile_page' recipe.author.profile.id %}">(Profile Page)</a>
+
 		{% endif %}
+
 	</div>
+
   	<p>Published: {{ recipe.published }}</p>
   	<p>Rating: {{ recipe.get_rating }}/5.0 ☆ ( {{ recipe.get_review_count }} )</p>
 
 	{% if request.user not in recipe.match_reviewer %}
+
 		<form method="GET">
 			<button type="submit", formaction="{% url 'recipe_rating' recipe.pk %}">Rate Recipe</button>
 		</form>
+
   	{% endif %}
 
 	<h3>Macros: </h3>
@@ -45,7 +61,7 @@
 	Calories: {{ recipe.calories}} cal <br>
 
   	<div id="ingredients">
-            {% include "partials/ingredients.html" with foods=recipe.foods.all %}
+        {% include "partials/ingredients.html" with foods=recipe.foods.all %}
     </div>
 	
 
@@ -56,23 +72,37 @@
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
 	</form>
+
 	<h3>Comments...</h3>
+
 	<form method="GET">
 		<button type="submit", formaction="{% url 'add_comment' recipe.pk %}">Add Comment</button>
 	</form>
+
 	{% if not recipe.comments.all %}
+
 		<p>No comments yet</p>
+
 	{% else %}
+
 		{% for comment in recipe.comments.all %}
+
 			<div>
+
 				<strong>
 				{{ comment.name }} - 
 				{{ comment.created_on }} - 
 				</strong>
+				
 				<br/>
 				{{ comment.body }} 
+
 			</div>
+
 		{% endfor %}
+
 	{% endif %}
+
 </div>
+
 {% endblock %}

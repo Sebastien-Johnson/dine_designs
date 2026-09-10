@@ -14,18 +14,17 @@
         action="{% url 'recipe_edit' recipe.pk %}"
     >
         {% csrf_token %}
-
         {{ form.as_p }}
 
         <hr>
 		<h3>Add Ingredients </h3>
-        <!-- USDA search -->
+            <!-- usda search bar edit -->
         	{% include "partials/api_search_bar_edit.html" %}
         <br>
 
         <h3>Ingredients</h3>
 
-        <!-- Existing recipe ingredients -->
+            <!-- food list display maintains ingredient list  -->
         <div id="food_list">
             {% include "partials/food_list_edit.html" with ingredients=recipe.ingredients.all %}
         </div>
@@ -34,42 +33,47 @@
         <button type="submit">
             Save Recipe
         </button>
-    </form>
 
+    </form>
 
     <hr>
 
     <form method="GET">
+
         <button
             type="submit"
             formaction="{% url 'recipe_confirm_delete' recipe.pk %}"
         >
             Delete Recipe
         </button>
+
     </form>
 
 
     <form method="GET">
+
         <button
             type="submit"
             formaction="{% url 'recipe_list' %}"
         >
             Return Home
         </button>
-    </form>
 
+    </form>
 
 {% elif request.user.is_authenticated %}
 
     <h2>Only the recipe's chef can edit!</h2>
 
     <form method="GET">
+
         <button
             type="submit"
             formaction="{% url 'recipe_list' %}"
         >
             Return Home
         </button>
+
     </form>
 
 
@@ -78,12 +82,14 @@
     <p>Please login to edit recipes</p>
 
     <form method="GET">
+
         <button
             type="submit"
             formaction="{% url 'log_auth' %}"
         >
             Login/Signup
         </button>
+
     </form>
 
 {% endif %}

@@ -1,8 +1,12 @@
 {% if foods %}
+
     <br>
     <ul>
+
         {% for food in foods %}
+
             <div class="ingredient" id="food-{{ food.pk }}">
+
                 <strong>{{ food.name }}</strong>
 
                 <div>
@@ -30,7 +34,7 @@
                     value="{{ food.pk }}"
                 >
 
-                <!-- target inputs of food calc-->
+                <!-- target inputs of food calc -->
                 <div id="nutrition-{{ food.pk }}">
                     Protein: {{ food.base_proteins }} g |
                     Carbs: {{ food.base_carbs }} g |
@@ -38,7 +42,6 @@
                     Calories: {{food.base_calories }} cal
                 </div>
                 
-                <!-- delete button -->
                 <button
                     type="button"
                     hx-post="{% url 'remove_food' food.pk %}"
@@ -49,8 +52,13 @@
             </button>
 
             </div>
+
         {% endfor %}
+
     </ul>
+
 {% else %}
+
     <p>No ingredients listed.</p>
+
 {% endif %}

@@ -10,6 +10,7 @@
                 {{ food.description.title }}, {{ food.brandName.title }}
             </option>
         {% endfor %}
+        
     </select>
 
     <!-- hx-include saves each item starting with serving_size, updates to db -->
@@ -28,5 +29,7 @@
     </button>
 
 {% elif request.GET.foodname %}
+
     <p>No foods found.</p>
+
 {% endif %}

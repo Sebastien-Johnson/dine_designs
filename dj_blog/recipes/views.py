@@ -1,38 +1,45 @@
-from django.views.generic import *
+import requests
+
+from .models import Recipe, Comment, Rating, Food, Ingredient
+from .forms import CreateRecipe, AddComment, AddRating
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Recipe, Comment, Rating, Food, Ingredient
-from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic.list import ListView
 from django.conf import settings
-import requests, json
+
 
 
 class RecipeListView(ListView):
+    """ Orders recipes by publish date """
     model = Recipe
     template_name = "recipe_list.html"
     ordering = ["-published"]
 
 class RecipeDetailView(DetailView):
+    """ Shows individual recipe details"""
     model = Recipe
     template_name = "recipe_detail.html"
 
     def food_list(self, request):
+        """ List all of recipe's associated foods"""
         
         results = self.food_set
+
         if not results:
             return HttpResponse("No food found")
 
-        #filters selected foods from all food 
+        
         food_ids = []
+        
         for f in results:
             if f:
                 food_ids.append(int(f))
+ 
         selected_foods = Food.objects.filter(pk__in=food_ids)
-
-        #returns foods as list items
+        
         return render(
             request,
             "partials/food_list.html",
@@ -67,7 +74,7 @@ class RecipeCreateView(CreateView):
                     food.base_serving
                 )
             )
-            #creates new ingredient obj from serving size
+            #creates new ingredient obj from serving size & food item
             Ingredient.objects.create(
                 recipe=self.object,
                 food=food,
@@ -84,17 +91,17 @@ class RecipeEditView(UpdateView):
     template_name = "recipe_edit.html"
 
     def form_valid(self, form):
-        # Save title, instructions, cover, etc.
+        # Saves existing form field values
         response = super().form_valid(form)
 
-        # Get the foods submitted by the hidden inputs
+        # Get existing foods in the hidden inputs field (including newly submitted)
         food_ids = [
             food_id
             for food_id in self.request.POST.getlist("foods")
             if food_id
         ]
 
-         # Remove ingredients that are no longer in the recipe
+        # Removes all ingredients in the foods list thats not in ID list
         Ingredient.objects.filter(
             recipe=self.object
         ).exclude(
@@ -105,6 +112,7 @@ class RecipeEditView(UpdateView):
         for food_id in food_ids:
             food = get_object_or_404(Food, pk=food_id)
 
+            #gets adjustable serving size for ingredient
             serving_size = float(
                 self.request.POST.get(
                     f"serving_size_{food_id}",
@@ -139,6 +147,7 @@ class RecipeDeleteView(DeleteView):
 
         if request.method == "GET":
             return render(request, "recipe_confirm_delete.html", context)
+        
         elif request.method == "POST":
             recipe.delete()
             messages.success(request, "The recipe has been deleted successfully.")
@@ -174,7 +183,7 @@ def add_food(request):
 
     if not fdc_id:
         return HttpResponseBadRequest("No food selected.")
-    #retrieves single food via fdc_id
+    
     url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}"
 
     params = {
@@ -186,7 +195,6 @@ def add_food(request):
 
     food_json = response.json()
 
-    #gets or creates searched food
     food = create_food_item(food_json)
 
     #gets existing list of form's foods
@@ -212,7 +220,6 @@ def add_food(request):
         },
     )
 
-
 def search_food(request):
     """ gets list of foods for drop down menu """
     food_req = request.GET.get("foodname", "").strip()
@@ -223,6 +230,7 @@ def search_food(request):
             "partials/food_search_results.html",
             {"foods": []},
         )
+    
     # retrieves list of foods via name (description)
     url = "https://api.nal.usda.gov/fdc/v1/foods/search"
 
@@ -237,6 +245,7 @@ def search_food(request):
 
     results = response.json().get("foods", [])
 
+    #renders drop down menu
     return render(
         request,
         "partials/food_search_results.html",
@@ -244,10 +253,8 @@ def search_food(request):
     )
 
 def create_food_item(food_json):
-    """ gets or creates food item """
+    """ gets or creates Food item from macros """
     foodNutrients = food_json.get("foodNutrients", [])
-
-    
 
     proteins = 0
     carbs = 0
@@ -291,6 +298,7 @@ def create_food_item(food_json):
     return food
 
 def calculate_food(request, food_id):
+    """ Modifies base macros via serving size for ingredients """
     food = get_object_or_404(Food, pk=food_id)
 
     serving_size = float(
@@ -319,7 +327,6 @@ def remove_food(request, food_id):
     """Removes food from creation form, maintains obj in db """
     return HttpResponse("")
 
-
 def add_food_edit(request, recipe_id):
     """Add a food to an existing recipe while preserving
     the current serving sizes in the edit form.
@@ -332,7 +339,7 @@ def add_food_edit(request, recipe_id):
     if not fdc_id:
         return HttpResponseBadRequest("No food selected.")
 
-    # Get food from USDA
+    #get food from USDA
     url = f"https://api.nal.usda.gov/fdc/v1/food/{fdc_id}"
 
     params = {
@@ -344,39 +351,37 @@ def add_food_edit(request, recipe_id):
 
     food_json = response.json()
 
-    # Get or create the Food object
+    #get or create the Food object
     food = create_food_item(food_json)
 
-    # ---------------------------------------------------------
-    # Preserve the serving sizes currently displayed in the form
-    # ---------------------------------------------------------
-    #check what django recieves
+    
+    #maintains recipe's existing ingredients serving size values
     for key, value in request.POST.items():
 
         if key.startswith("serving_size_"):
+            #removes 'serving_size' from key, leaving a number
             food_id = key.replace("serving_size_", "")
 
+            #check if number, set serving size
             try:
                 food_id = int(food_id)
                 serving_size = float(value)
             except (ValueError, TypeError):
                 continue
 
-            # Find the existing ingredient
+            #gind the existing ingredient
             ingredient = Ingredient.objects.filter(
                 recipe=recipe,
                 food_id=food_id
             ).first()
 
+            #set existing ingredient values to previous
             if ingredient:
                 ingredient.serving_size = serving_size
                 ingredient.serving_unit = ingredient.food.base_unit
                 ingredient.save()
 
-    # ---------------------------------------------------------
-    # Add the newly selected food
-    # ---------------------------------------------------------
-
+    #adds new ingredient from query
     Ingredient.objects.get_or_create(
         recipe=recipe,
         food=food,
@@ -386,7 +391,7 @@ def add_food_edit(request, recipe_id):
         },
     )
 
-    # Get the complete ingredient list AFTER adding the new food
+    #get the complete ingredient list AFTER adding the new food
     ingredients = recipe.ingredients.select_related("food").all()
 
     return render(
@@ -399,10 +404,12 @@ def add_food_edit(request, recipe_id):
     )
 
 def search_food_edit(request, recipe_id):
+    """ view for search bar in edit form """
     recipe = get_object_or_404(Recipe, pk=recipe_id)
 
     food_req = request.GET.get("foodname", "").strip()
 
+    #returns existing recipe state if no food in req
     if not food_req:
         return render(
             request,
@@ -415,6 +422,7 @@ def search_food_edit(request, recipe_id):
 
     url = "https://api.nal.usda.gov/fdc/v1/foods/search"
 
+    #search bar params
     params = {
         "api_key": settings.USDA_API_KEY,
         "query": food_req,
@@ -426,6 +434,7 @@ def search_food_edit(request, recipe_id):
 
     results = response.json().get("foods", [])
 
+    #renders search bar results
     return render(
         request,
         "partials/food_search_results_edit.html",
