@@ -5,9 +5,9 @@ import os
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = yamjam()['myproject']['dj_secret_key']
-USDA_API_KEY = yamjam()['myproject']['usda_api_key']
-DJANGO_DB_PW = yamjam()["myproject"]["django_db_pw"]
+SECRET_KEY = os.environ.get('dj_secret_key')
+USDA_API_KEY = os.environ.get('usda_api_key')
+DJANGO_DB_PW = os.environ.get("django_db_pw")
 DEBUG = True
 
 ALLOWED_HOSTS = []
