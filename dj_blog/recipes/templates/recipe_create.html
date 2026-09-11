@@ -34,11 +34,6 @@
 		</form>
 
 	</div>
-	
-    <script>
-		var name = "{{user.id}}";
-		document.getElementById("author_name_field").value = name;
-    </script>
     
     <form method="GET">
     	<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>

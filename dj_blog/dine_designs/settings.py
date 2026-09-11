@@ -23,9 +23,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_bootstrap5",
     "accounts",
     "recipes",
+    "django_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -63,8 +63,12 @@ WSGI_APPLICATION = "dine_designs.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "dine_designs.db",
+        "ENGINE":"django.db.backends.postgresql",
+        "NAME":"dine_designs_db",
+        "USER":"SebasPG",
+        "PASSWORD":os.environ.get("PSQL_DB_PW"),
+        "HOST":"172.18.192.1",
+        "PORT":"5432",
     }
 }
 
