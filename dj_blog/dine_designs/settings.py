@@ -1,13 +1,14 @@
 from pathlib import Path
-from YamJam import yamjam
+from dotenv import load_dotenv
+load_dotenv()
 import os
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('dj_secret_key')
-USDA_API_KEY = os.environ.get('usda_api_key')
-DJANGO_DB_PW = os.environ.get("django_db_pw")
+SECRET_KEY = os.environ.get("SECRET_KEY")
+USDA_API_KEY = os.environ.get("USDA_API_KEY")
+DJANGO_DB_PW = os.environ.get("DJANGO_DB_PW")
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_bootstrap5",
     "accounts",
     "recipes",
 ]

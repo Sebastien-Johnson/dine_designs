@@ -22,6 +22,6 @@ class AddRating(forms.ModelForm):
         fields = ("score",)
 
         widgets = {
-            "score": forms.NumberInput(attrs={'class': 'form-control'}),
+            "score": forms.NumberInput(attrs={'class': 'form-control', "min":0, "max":5}),
         }
 

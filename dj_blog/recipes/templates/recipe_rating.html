@@ -9,10 +9,18 @@
 	<h2>Rate Recipe</h2>
 	
 	<form method="POST" enctype="multipart/form-data">
-		{% csrf_token %}
-		{{ form.as_p }}
+			{% csrf_token %}
+			{{ form.as_p }}
 		<button type="submit">Submit Rating</button>
 	</form>
+
+{% else %}
+
+<p>Please login to create new recipes</p>
+
+    <form method="GET">
+        <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
+    </form>
 
 {% endif %}
 
