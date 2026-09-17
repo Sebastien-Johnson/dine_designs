@@ -1,14 +1,12 @@
 from pathlib import Path
-from dotenv import load_dotenv
-load_dotenv()
 import os
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-USDA_API_KEY = os.environ.get("USDA_API_KEY")
-DJANGO_DB_PW = os.environ.get("DJANGO_DB_PW")
+SECRET_KEY = os.environ["SECRET_KEY"]
+USDA_API_KEY = os.environ["USDA_API_KEY"]
+#DJANGO_DB_PW = os.environ["DJANGO_DB_PW"]
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -61,16 +59,28 @@ WSGI_APPLICATION = "dine_designs.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
 DATABASES = {
-    "default": {
-        "ENGINE":"django.db.backends.postgresql",
-        "NAME":"dine_designs_db",
-        "USER":"SebasPG",
-        "PASSWORD":os.environ.get("PSQL_DB_PW"),
-        "HOST":"172.18.192.1",
-        "PORT":"5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": os.environ["DB_HOST"],
+        "PORT": os.environ["DB_PORT"],
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE":"django.db.backends.postgresql",
+#         "NAME":"dine_designs_db",
+#         "USER":"SebasPG",
+#         "PASSWORD":os.environ.get("PSQL_DB_PW"),
+#         "HOST":"172.18.192.1",
+#         "PORT":"5432",
+#     }
+# }
 
 
 # Password validation

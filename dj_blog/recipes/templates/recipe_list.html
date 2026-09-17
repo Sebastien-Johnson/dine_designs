@@ -41,13 +41,16 @@
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_create' %}">Create Recipe</button>
 	</form>
+{% if recipe in object_list %}
 
-{% for recipe in object_list  %}
+	{% for recipe in object_list  %}
 
-	<div>
-		<h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
-	</div>
+		<div>
+			<h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
+		</div>
 
-{% endfor %}
+	{% endfor %}
+
+{% endif %}
 
 {% endblock %}

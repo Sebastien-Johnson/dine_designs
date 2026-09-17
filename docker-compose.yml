@@ -1,0 +1,34 @@
+services:
+  web: #web app service
+    build: . #uses dockerfile in directory for setup
+    container_name: dd_web_app
+    ports:
+      - 8000:8000 #connects container to host
+    volumes:
+      - ./dj_blog:/app #connects src dir of host to app dir of container
+    depends_on: #only starts webapp if db healthcheck is trye
+      db: 
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
+  db: #database service
+    image: postgres:17
+    container_name: dd_postgres_db
+    volumes: #stores db data
+      - dd_postgres_db:/var/lib/postgresql/data/
+      # any volume with "dd_postgres_db" name will grab previous data
+    environment:  #sets db creds to be matched in settings
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+    healthcheck: #control boot and shut down order
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+#top level volume declaration enables persistance
+volumes:
+  dd_postgres_db:
