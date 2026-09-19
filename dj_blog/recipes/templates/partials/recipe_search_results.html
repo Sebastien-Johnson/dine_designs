@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Comment on recipe{% endblock %}
+
+{% block content %}
+<h1>Recipe Results</h1>
+{% if query %}
+
+    {% if recipes %}
+
+        <div class="list-group">
+
+            {% for recipe in recipes %}
+
+                <div>
+			        <h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
+		        </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p class="text-muted mt-3">
+            No recipes found for "{{ query }}".
+        </p>
+
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

@@ -27,22 +27,80 @@
   </head>
 
   <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'recipe_list' %}">Dine Designs</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      </ul>
 
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="{% url 'recipe_list' %}">
+        Dine Designs
+      </a>
+
+      <!-- Mobile toggle -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Navbar content -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="nav navbar-nav">
+			
+			{% if user.is_authenticated %}
+
+				<li><a class="nav-item nav-link active" href="{% url 'show_profile_page' user.profile.id %}">{{user.username}}</a></li><br>
+				<li><a class="nav-item nav-link active" href="{% url 'edit_account' %}">Edit Account</a></li><br>
+
+				{% if user.profile %}
+					<li><a class="nav-item nav-link active" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</a></li><br>
+				{% else %}
+					<li><a class="nav-item nav-link active" href="{% url 'create_user_profile_page' %}">Create Profile</a></li><br>
+				{% endif %}
+			
+				<li><a class="nav-item nav-link active" href="{% url 'recipe_create' %}">Create Recipe</a></li><br>
+				<li><a class="nav-item nav-link active" href="{% url 'logout' %}" >Log Out</a></li><br>
+
+			{% else %}
+				<li><a href=="{% url 'log_auth' %}">Login/Signup</a></li><br>
+			{% endif %}
+		</ul>
+        <!-- Search -->
+        <form class="d-flex ms-auto" 
+            method="GET" 
+            action="{% url 'recipe_search' %}" 
+            hx-get="{% url 'recipe_search' %}" 
+            hx-trigger="keyup changed delay:500ms" 
+            hx-target="#recipe-search-results" 
+            hx-swap="innerHTML" 
+        > 
+            <input type="search" 
+                	name="q" 
+					class="form-control" 
+					placeholder="Search recipes..." 
+					aria-label="Search recipes" 
+					autocomplete="off" 
+			> 
+			<button type="submit" class="btn btn-primary"> 
+				Search 
+			</button> 
+		</form>
+		<div 
+			id="recipe-search-results" 
+			class="position-absolute" 
+			style="z-index: 1000;" 
+		></div>
+
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-	<main>
+  <main>
 
 			
 		{% block content %}

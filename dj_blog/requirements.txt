@@ -5,7 +5,7 @@ Django==6.0.7
 django-bootstrap5==26.3
 idna==3.18
 pillow==12.3.0
-psycopg2-binary==2.9.12
+psycopg[binary]
 python-dotenv==1.2.3
 requests==2.34.2
 sqlparse==0.5.5

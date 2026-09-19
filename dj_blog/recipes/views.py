@@ -6,11 +6,10 @@ from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.list import ListView
+from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
-
-
 
 class RecipeListView(ListView):
     """ Orders recipes by publish date """
@@ -441,5 +440,29 @@ def search_food_edit(request, recipe_id):
         {
             "foods": results,
             "recipe": recipe,
+        },
+    )
+
+def recipe_search(request):
+    query = request.GET.get("q", "").strip()
+
+    recipes = Recipe.objects.none()
+    # Q turns filters into objects that can use logic operators
+    if query:
+        recipes = (
+            Recipe.objects
+            .filter(
+                Q(title__icontains=query) |
+                Q(ingredients__food__name__icontains=query)
+            )
+            .distinct() #prevents repeat returns for multiple matches within one search
+        )
+
+    return render(
+        request,
+        "partials/recipe_search_results.html",
+        {
+            "recipes": recipes,
+            "query": query,
         },
     )
