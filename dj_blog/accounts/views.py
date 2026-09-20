@@ -2,9 +2,9 @@ from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, LogoutView
 from .forms import CustomUserCreationForm, CustomUserChangeForm, ProfilePageForm
-from .models import Profile
+from .models import Profile, CustomUser
 
 
 class SignUpView(CreateView):
@@ -13,8 +13,9 @@ class SignUpView(CreateView):
     template_name = "registration/signup.html"
 
 class EditAccountView(UpdateView):
+    model = CustomUser
     form_class = CustomUserChangeForm
-    success_url = reverse_lazy("post_list")
+    success_url = reverse_lazy("recipe_list")
     template_name = "registration/edit_account.html"
 
     def get_object(self):
@@ -36,7 +37,9 @@ class ShowProfilePageView(DetailView):
         context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
 
         page_user = get_object_or_404(Profile, id=self.kwargs["pk"])
-
+        print("++++++++++++++++++++++++++++++++")
+        print(f"PRINTING PAGE USER {page_user.id}")
+        print("++++++++++++++++++++++++++++++++")
         context["page_user"] = page_user
         return context
     
@@ -55,3 +58,7 @@ class CreateUserProfilePageView(CreateView):
         #sets 'user' for current form creation to that form's 'user'
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class CustomLogoutView(LogoutView):
+    next_page = "recipe_list"

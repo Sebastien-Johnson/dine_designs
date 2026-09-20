@@ -71,16 +71,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE":"django.db.backends.postgresql",
-#         "NAME":"dine_designs_db",
-#         "USER":"SebasPG",
-#         "PASSWORD":os.environ.get("PSQL_DB_PW"),
-#         "HOST":"172.18.192.1",
-#         "PORT":"5432",
-#     }
-# }
 
 
 # Password validation
