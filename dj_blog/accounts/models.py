@@ -10,8 +10,8 @@ class CustomUser(AbstractUser):
         return self.username
 
 class Profile(models.Model):
-    user = models.OneToOneField(CustomUser, null=True, on_delete=models.CASCADE)
-    bio = models.TextField()
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True)
     profile_pic = models.ImageField(upload_to="images/profile/", blank=True, null=True)
     website_url = models.CharField(max_length=255, null=True, blank=True)
     bookface_url = models.CharField(max_length=255, null=True, blank=True)

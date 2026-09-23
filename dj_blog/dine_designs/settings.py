@@ -6,7 +6,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ["SECRET_KEY"]
 USDA_API_KEY = os.environ["USDA_API_KEY"]
-#DJANGO_DB_PW = os.environ["DJANGO_DB_PW"]
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -112,6 +111,7 @@ STATICFILES_DIRS = [ os.path.join(BASE_DIR, "static")]
 
 #Auth
 AUTH_USER_MODEL = "accounts.CustomUser"
+ACCOUNT_SINGUP_FORM_CLASS = "acoounts.forms.CustomSignupForm"
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"

@@ -37,28 +37,17 @@ class ShowProfilePageView(DetailView):
         context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
 
         page_user = get_object_or_404(Profile, id=self.kwargs["pk"])
-        print("++++++++++++++++++++++++++++++++")
-        print(f"PRINTING PAGE USER {page_user.id}")
-        print("++++++++++++++++++++++++++++++++")
         context["page_user"] = page_user
         return context
     
 class EditProfilePageView(UpdateView):
     model = Profile
     template_name = "registration/edit_profile_page.html"
-    success_url = reverse_lazy("post_list")
+    success_url = reverse_lazy("recipe_list")
     fields = ["bio", "profile_pic", "website_url", "bookface_url", "litter_url", "denturest_url", "delaypound_url"]
 
-class CreateUserProfilePageView(CreateView):
-    model = Profile
-    form_class = ProfilePageForm
-    template_name = "registration/create_user_profile_page.html"
-
-    def form_valid(self, form):
-        #sets 'user' for current form creation to that form's 'user'
-        form.instance.user = self.request.user
-        return super().form_valid(form)
-
+    def get_object(self):
+        return self.request.user.profile
 
 class CustomLogoutView(LogoutView):
     next_page = "recipe_list"

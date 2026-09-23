@@ -9,6 +9,5 @@ urlpatterns = [
     path("password_success", password_success, name="password_success"),
     path("<int:pk>/profile/", ShowProfilePageView.as_view(), name="show_profile_page"),
     path("<int:pk>/edit_profile_page/", EditProfilePageView.as_view(), name="edit_profile_page"),
-    path("create_user_profile_page/", CreateUserProfilePageView.as_view(), name="create_user_profile_page"),
     path("logout/", LogoutView.as_view(next_page="recipe_list"), name="logout"),
 ]
