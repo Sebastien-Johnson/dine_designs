@@ -1,0 +1,26 @@
+<div class="instruction-step mb-3">
+
+    <label class="form-label">
+        Step {{ step_number }}
+    </label>
+
+    <div class="input-group">
+
+        <textarea
+            name="instruction"
+            class="form-control"
+            rows="3"
+            placeholder="Enter instruction..."
+        ></textarea>
+
+        <button
+            type="button"
+            class="btn btn-danger"
+            hx-on:click="this.closest('.instruction-step').remove()"
+        >
+            Remove
+        </button>
+
+    </div>
+
+</div>

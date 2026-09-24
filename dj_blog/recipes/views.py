@@ -1,6 +1,6 @@
 import requests
 
-from .models import Recipe, Comment, Rating, Food, Ingredient
+from .models import Recipe, Comment, Rating, Food, Ingredient, Instruction
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib import messages
@@ -58,6 +58,24 @@ class RecipeCreateView(CreateView):
 
         response = super().form_valid(form)
 
+        instructions = self.request.POST.getlist(
+            "instruction"
+        )
+
+        for step_number, text in enumerate(
+            instructions,
+            start=1
+        ):
+
+            text = text.strip()
+
+            if text:
+                Instruction.objects.create(
+                    recipe=self.object,
+                    step_number=step_number,
+                    text=text
+                )
+                
         food_ids = [
                 food_id
                 for food_id in self.request.POST.getlist("foods")
@@ -80,6 +98,7 @@ class RecipeCreateView(CreateView):
                 serving_size=serving_size,
                 serving_unit=food.base_unit,
             )
+        
 
         return response
 
@@ -465,4 +484,37 @@ def recipe_search(request):
             "recipes": recipes,
             "query": query,
         },
+    )
+
+def add_instruction(request):
+
+    instructions = request.POST.getlist("instruction")
+
+    instructions.append("")
+
+    return render(
+        request,
+        "partials/instruction_list.html",
+        {
+            "instructions": instructions,
+        }
+    )
+
+def remove_instruction(request):
+
+    instructions = request.POST.getlist("instruction")
+
+    remove_index = int(
+        request.POST.get("remove_index")
+    )
+
+    if 0 <= remove_index < len(instructions):
+        instructions.pop(remove_index)
+
+    return render(
+        request,
+        "partials/instruction_list.html",
+        {
+            "instructions": instructions,
+        }
     )

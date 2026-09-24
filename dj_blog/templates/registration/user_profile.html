@@ -13,28 +13,10 @@
 	{% if page_user.profile_pic %}
 		<img src="{{ page_user.profile_pic.url }}" width=100 height=100>
 	{% else %}
-		<img src="{% static 'dj_blog/images/default_profile_pic.png' %}" width=100 height=100>
-	{% endif %}
-		<p class="small text-muted">
-	{% if page_user.website_url %}
-		| <a href="{{page_user.website_url}}">Website</a>
-	{% endif %}
-	{% if page_user.bookface_url %}
-		| <a href="{{page_user.bookface_url}}">Bookface</a>
-	{% endif %}
-	{% if page_user.litter_url %}
-		| <a href="{{page_user.litter_url}}">Litter</a>
-	{% endif %}
-	{% if page_user.denturist_url %}
-		| <a href="{{page_user.denturest_url}}">Denturist</a>
-	{% endif %}
-	{% if page_user.delaypound_url %}
-		| <a href="{{page_user.delaypound_url}}">Delaypound</a>
+		<img src="{% static 'images/default_pfp.png' %}" width=100 height=100>
 	{% endif %}
 
-</div>
-
-{% if page_user.user.id == request.user.id %}
+	{% if page_user.user.id == request.user.id %}
 
 	<div class="form-group">
 
@@ -44,20 +26,54 @@
 
 	</div>
 
-{% endif %}
+	{% endif %}
+
+	{% if page_user.bio %}
+		<h3>About me: </h3>
+		<p>{{ page_user.bio }}</p>
+	{% else %}
+		<p>No bio yet...</p>
+	{% endif %}
+
+		<p class="small text-muted">
+	{% if page_user.website_url %}
+		| <a href="{{page_user.website_url}}">Website</a>
+	{% endif %}
+
+	{% if page_user.bookface_url %}
+		| <a href="{{page_user.bookface_url}}">Bookface</a>
+	{% endif %}
+
+	{% if page_user.litter_url %}
+		| <a href="{{page_user.litter_url}}">Litter</a>
+	{% endif %}
+
+	{% if page_user.denturist_url %}
+		| <a href="{{page_user.denturest_url}}">Denturist</a>
+	{% endif %}
+
+	{% if page_user.delaypound_url %}
+		| <a href="{{page_user.delaypound_url}}">Delaypound</a>
+	{% endif %}
+
+</div>
+
+
 
 <div>
 
-	<h3>About me: {{ page_user.bio }}</h3>
 	<h3>Chef {{page_user}}'s Recipes</h3>
+	{% if page_user.user.recipes %}
+		{% for recipe_post in page_user.user.recipes.all %}
 
-	{% for post in page_user.user.recipes.all %}
+			<div>
+				<h2><a href="{% url 'recipe_detail' recipe_post.pk %}">{{ recipe_post.title }}</a></h2>
+			</div>
 
-		<div>
-			<h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
-		</div>
-
-	{% endfor %}
+		{% endfor %}
+	{% else %}
+		<p>This chef hasn't created any recipes yet.</p>
+	{% endif %}
 
 </div>
 

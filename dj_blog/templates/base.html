@@ -59,10 +59,8 @@
 
 				{% if user.profile %}
           <li><a class="nav-item nav-link active" href="{% url 'show_profile_page' user.profile.id %}">{{user.username}}</a></li><br>
-					<li><a class="nav-item nav-link active" href="{% url 'edit_profile_page' user.profile.id %}">Edit Profile</a></li><br>
 				{% else %}
           <li><a class="nav-item nav-link active" href="{% url 'edit_account' %}">Edit Account ({{user.username}})</a></li><br>
-					<li><a class="nav-item nav-link active" href="{% url 'create_user_profile_page' %}">Create Profile</a></li><br>
 				{% endif %}
       
 				<li><a class="nav-item nav-link active" href="{% url 'recipe_create' %}">Create Recipe</a></li><br>

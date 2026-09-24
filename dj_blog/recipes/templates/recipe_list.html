@@ -9,7 +9,7 @@
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_create' %}">Create Recipe</button>
 	</form>
-{% if recipe in object_list %}
+{% if object_list %}
 
 	{% for recipe in object_list  %}
 

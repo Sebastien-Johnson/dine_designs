@@ -65,9 +65,34 @@
     </div>
 	
 
-	<h3>Instructions: </h3>
-	<p>{{ recipe.instructions }}</p>
-	
+	<h2>Instructions</h2>
+	{% for step in recipe.instructions.all %}
+
+		<div class="card mb-3">
+			<div class="card-body">
+
+				<div class="d-flex align-items-start">
+
+					<span class="badge bg-primary rounded-pill me-3">
+						{{ forloop.counter }}
+					</span>
+
+					<div>
+						{{ step.text }}
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+	{% empty %}
+
+		<p class="text-muted">
+			No instructions have been added.
+		</p>
+
+	{% endfor %}
 
 	<form method="GET">
 		<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>

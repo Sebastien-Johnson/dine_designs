@@ -1,0 +1,33 @@
+{% for instruction in instructions %}
+
+    <div class="instruction-step mb-3">
+
+        <label class="form-label">
+            Step {{ forloop.counter }}
+        </label>
+
+        <textarea
+            name="instruction"
+            class="form-control mb-2"
+            rows="3"
+            placeholder="Enter instruction..."
+        >{{ instruction }}</textarea>
+
+        {% if not forloop.first %}
+            <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                hx-post="{% url 'remove_instruction' %}"
+                hx-target="#instruction-list"
+                hx-swap="innerHTML"
+                hx-include="#instruction-list"
+                name="remove_index"
+                value="{{ forloop.counter0 }}"
+            >
+                Remove
+            </button>
+        {% endif %}
+
+    </div>
+
+{% endfor %}

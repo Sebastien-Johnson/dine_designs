@@ -6,13 +6,15 @@
 
 {% if request.user.is_authenticated %}
 
-  	<h2>Create Recipe</h2>
 
 	<div id="recipe-form-container">
 
+	<h2>Create Recipe</h2>
+
 		<form
-			hx-post="{% url 'recipe_create' %}"
-			hx-target="#recipe-form-container"
+			method="POST"
+			enctype="multipart/form-data"
+			action="{% url 'recipe_create' %}"
 		>
 			{% csrf_token %}
 			{{ form.as_p }}
@@ -27,7 +29,39 @@
             	{% include "partials/food_list.html" with foods=recipe.foods.all %}
         	</div>
 
-			<hr/>
+			<div class="mb-4">
+
+		<h3>Instructions</h3>
+
+		<div id="instruction-list">
+
+			<div class="instruction-step mb-3">
+
+				<label class="form-label">
+					Step 1
+				</label>
+
+				<textarea
+					name="instruction"
+					class="form-control"
+					rows="3"
+					placeholder="Enter instruction..."
+				></textarea>
+
+			</div>
+
+		</div>
+
+		<button
+			type="button"
+			class="btn btn-secondary"
+			hx-post="{% url 'add_instruction' %}"
+			hx-target="#instruction-list"
+			hx-swap="innerHTML"
+			hx-include="#instruction-list"
+		>
+			+ Add Step
+		</button></br></br>
 
 			<button type="submit">Post Recipe</button>
 

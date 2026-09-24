@@ -1,43 +1,45 @@
 {% extends "base.html" %}
 
+{% load django_bootstrap5 %}
+
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
 
-{% if request.user.is_authenticated %}
+<div class="container">
 
-    {% if profile.user.id == request.user.id %}
+    <h2>Edit Profile</h2>
 
-        <h2>Edit Profile</h2>
-        
-        <div class="form-group">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button class="btn btn-secondary">Update Profile Page</button>
-            </form>
+        {% bootstrap_form form %}
 
-            <form method="GET">
-                <button type="submit", formaction="{% url 'show_profile_page' profile.id %}">Return to Profile</button>
-            </form>
+        <button type="submit" class="btn btn-primary">
+            Save Profile
+        </button>
+    </form>
 
-        </div>
 
-    {% endif %}
+    <hr class="my-4">
 
-{% else %}
 
-    <h2>Please login to edit your profile</h2>
+    <h2>Change Password</h2>
 
-    <div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
 
-        <form method="GET">
-            <button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-        </form>
+        {% bootstrap_form password_form %}
 
-    </div>
+        <button
+            type="submit"
+            name="change_password"
+            class="btn btn-warning"
+        >
+            Change Password
+        </button>
+    </form>
 
-{% endif %}
+</div>
 
 {% endblock %}

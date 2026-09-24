@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView, LogoutView
@@ -23,6 +23,7 @@ class EditAccountView(UpdateView):
 
 class ChangePasswordView(PasswordChangeView):
     form_class = PasswordChangeForm 
+    template_name = "registration/edit_profile_page.html"
     success_url = reverse_lazy("password_success")
 
 def password_success(request):
@@ -42,12 +43,45 @@ class ShowProfilePageView(DetailView):
     
 class EditProfilePageView(UpdateView):
     model = Profile
+    form_class = ProfilePageForm
     template_name = "registration/edit_profile_page.html"
     success_url = reverse_lazy("recipe_list")
-    fields = ["bio", "profile_pic", "website_url", "bookface_url", "litter_url", "denturest_url", "delaypound_url"]
-
+    
     def get_object(self):
         return self.request.user.profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if "password_form" not in context:
+            context["password_form"] = PasswordChangeForm(
+                user=self.request.user
+            )
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        # Determine which form was submitted
+        if "change_password" in request.POST:
+            password_form = PasswordChangeForm(
+                user=request.user,
+                data=request.POST
+            )
+
+            if password_form.is_valid():
+                password_form.save()
+
+                return redirect("password_success")
+
+            context = self.get_context_data()
+            context["password_form"] = password_form
+
+            return self.render_to_response(context)
+
+        # Otherwise process the profile form
+        return super().post(request, *args, **kwargs)
 
 class CustomLogoutView(LogoutView):
     next_page = "recipe_list"

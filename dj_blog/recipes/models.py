@@ -24,7 +24,6 @@ class Recipe(models.Model):
     title = models.CharField(max_length=100, default="")
     author = models.ForeignKey(CustomUser, related_name="recipes", on_delete=models.CASCADE, default=None)
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
-    instructions = models.TextField(default="")
     published = models.DateField(default=(f"{date.today().year}-{date.today().month}-{date.today().day}"))
     ratings = models.ManyToManyField(CustomUser, through="Rating", through_fields=("recipe", "user"))
     proteins = models.FloatField(default=0)
@@ -64,6 +63,7 @@ class Recipe(models.Model):
             self.calories += i.calories
 
         return ""
+
     
 class Ingredient(models.Model):
     """ 
@@ -101,6 +101,8 @@ class Ingredient(models.Model):
     def calories(self):
         return round((self.food.base_calories * self.multiplier), 1)
 
+    
+
 class Rating(models.Model):
     """ Recipe rating model. FKs on Users & Recipes """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -126,6 +128,10 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.recipe.title} by {self.name}"
 
+class Instruction(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name="instructions")
+    step_number = models.PositiveIntegerField()
+    text = models.TextField() 
 
-
-    
+    def __str__(self):
+        return f"{self.recipe.title} - Step {self.step_number}"

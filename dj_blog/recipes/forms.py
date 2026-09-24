@@ -4,7 +4,7 @@ from .models import Recipe, Comment, Rating
 class CreateRecipe(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ("title", "published", "cover", "instructions")
+        fields = ("title", "published", "cover")
 
 
 class AddComment(forms.ModelForm):
