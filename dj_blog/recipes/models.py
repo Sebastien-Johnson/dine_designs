@@ -24,6 +24,8 @@ class Recipe(models.Model):
     title = models.CharField(max_length=100, default="")
     author = models.ForeignKey(CustomUser, related_name="recipes", on_delete=models.CASCADE, default=None)
     cover = models.ImageField(upload_to="images/", blank=True, null=True)
+    cooking_time = models.DurationField(null=True, blank=True)
+    serves = models.PositiveIntegerField(default=1)
     published = models.DateField(default=(f"{date.today().year}-{date.today().month}-{date.today().day}"))
     ratings = models.ManyToManyField(CustomUser, through="Rating", through_fields=("recipe", "user"))
     proteins = models.FloatField(default=0)
@@ -63,6 +65,31 @@ class Recipe(models.Model):
             self.calories += i.calories
 
         return ""
+
+    @property
+    def cooking_time_display(self):
+        if not self.cooking_time:
+            return ""
+
+        total_minutes = int(
+            self.cooking_time.total_seconds() // 60
+        )
+
+        hours, minutes = divmod(total_minutes, 60)
+
+        parts = []
+
+        if hours:
+            parts.append(
+                f"{hours} hour" if hours == 1 else f"{hours} hours"
+            )
+
+        if minutes:
+            parts.append(
+                f"{minutes} minute" if minutes == 1 else f"{minutes} minutes"
+            )
+
+        return " ".join(parts)
 
     
 class Ingredient(models.Model):

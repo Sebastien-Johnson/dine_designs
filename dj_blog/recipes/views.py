@@ -1,5 +1,6 @@
 import requests
 
+
 from .models import Recipe, Comment, Rating, Food, Ingredient, Instruction
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
@@ -10,6 +11,7 @@ from django.views.generic.list import ListView
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from datetime import timedelta
 
 class RecipeListView(ListView):
     """ Orders recipes by publish date """
@@ -55,6 +57,14 @@ class RecipeCreateView(CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+
+        hours = form.cleaned_data.get("cooking_hours") or 0
+        minutes = form.cleaned_data.get("cooking_minutes") or 0
+
+        form.instance.cooking_time = timedelta(
+            hours=hours,
+            minutes=minutes
+        )
 
         response = super().form_valid(form)
 

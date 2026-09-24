@@ -53,6 +53,22 @@
 
   	{% endif %}
 
+	<div class="recipe-info">
+
+    {% if recipe.cooking_time %}
+        <span>
+            <strong>Cooking Time:</strong>
+            {{ recipe.cooking_time_display }}
+        </span>
+    {% endif %}
+	</br>
+    <span>
+        <strong>Serves:</strong>
+        {{ recipe.serves }}
+    </span>
+
+	</div>
+
 	<h3>Macros: </h3>
 	{{ recipe.compile_macros }} 
 	Proteins: {{ recipe.proteins }} g <br>
