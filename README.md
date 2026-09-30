@@ -16,68 +16,38 @@ Recipe sharing web app that allows for CRUD operations, commenting and rating
 
 
 ## Prerequisites
-- [Python 3.14+](https://www.python.org/downloads/)
-- [Pip package manager](https://pip.pypa.io/en/stable/installation/)
+- Docker
 
 ## Quick Start
 - Clone the Repository
 ```
 git clone https://github.com/Sebastien-Johnson/dine_designs
 ```
-- Setup version control
+- [Get api key](https://fdc.nal.usda.gov/api-key-signup#top) and set "USDA_API_KEY" in env
+- Build
 ```
-python -m venv /path/to/new/virtual/environment
+docker-compose up --build
 ```
-- Install dependencies
+- Run migrations
 ```
-pip install -r /path/to/requirements.txt
+docker exec -ti dd_postgres_db python manage.py makemigrations
+docker exec -ti dd_postgres_db python manage.py migrate
 ```
-- [Get api key](https://fdc.nal.usda.gov/api-key-signup#top) and setup yaml file
-```
-mkdir ~/.yamjam
-touch ~/.yamjam/config.yaml
-chmod -R go-rwx ~/.yamjam
-```
-settings.py
-```
-from YamJam import yamjam
-...
-DJANGO_SECRET_KEY = yamjam()['myproject']['django_secret_key']
-...
-```
-~/.yamjam/config.yaml
-```
-myproject:
-    django_secret_key: api_key
-```
-- Enter 'dj_blog' directory and run migrations
-```
-cd dj_blog
-python manage.py makemigrations
-python manage.py migrate
-```
-- Create an admin
+
+- Create an admin account
 ```
 python manage.py createsuperuser
 ```
-- Runserver
-```
-python manage.py runserver
-```
 
+- Access database shell
+```
+docker exec -ti dd_postgress_db psql -U {username} -d dev_database
+```
 
 ## Usage
 - View new posts on home feed
 - Register or login to accounts 
 - Publish, edit, comment and rate posts
-- Access admin panel: http://localhost:8000/admin/
-
-## Future updates
-- Pull nutrition facts automatically as you add to your recipe
-- Post category tags
-- Searching and filtering
-- Comment replies
-- Editing ratings
 
 ## Contributing
 - If you'd like to contribute, please fork, clone and test the repository before opening a pull request to the `main` branch.
