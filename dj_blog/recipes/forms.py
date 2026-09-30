@@ -29,11 +29,20 @@ class AddComment(forms.ModelForm):
         }
 
 class AddRating(forms.ModelForm):
-     class Meta:
+    class Meta:
         model = Rating
         fields = ("score",)
 
         widgets = {
-            "score": forms.NumberInput(attrs={'class': 'form-control', "min":0, "max":5}),
+            "score": forms.NumberInput(attrs={'class': 'form-control', "min":1, "max":5}),
         }
 
+    def clean_score(self):
+        score = self.cleaned_data["score"]
+
+        if score < 1 or score > 5:
+            raise forms.ValidationError(
+                "Rating must be between 1 and 5."
+            )
+
+        return score

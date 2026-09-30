@@ -24,6 +24,21 @@ class RecipeDetailView(DetailView):
     model = Recipe
     template_name = "recipe_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        recipe = self.object
+
+        if self.request.user.is_authenticated:
+            context["user_rating"] = Rating.objects.filter(
+                recipe=recipe,
+                user=self.request.user
+            ).first()
+        else:
+            context["user_rating"] = None
+
+        return context
+
     def food_list(self, request):
         """ List all of recipe's associated foods"""
         
@@ -196,7 +211,6 @@ class RecipeRatingView(CreateView):
     model = Rating
     form_class = AddRating
     template_name = "recipe_rating.html"
-    success_url = reverse_lazy("recipe_list")
 
     #create rating and associate with post
 
@@ -204,6 +218,28 @@ class RecipeRatingView(CreateView):
         form.instance.recipe_id = self.kwargs["pk"]
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "recipe_detail",
+            kwargs={"pk": self.object.recipe.pk}
+        )
+
+class RatingUpdateView(UpdateView):
+    model = Rating
+    form_class = AddRating
+    template_name = "recipe_edit_rating.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "recipe_detail",
+            kwargs={"pk": self.object.recipe.pk}
+        )
+
+    def get_queryset(self):
+        return Rating.objects.filter(
+            user=self.request.user
+        )
 
 def add_food(request):
     """ gets or creates food for recipe creation form """

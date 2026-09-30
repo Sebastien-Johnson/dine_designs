@@ -4,31 +4,52 @@
 
 {% block content %}
 
-<div>
+{% if request.user.is_authenticated and request.user == rating.user %}
 
-    {% if request.user.is_authenticated and request.user == rating.user %}
-        <h2>Update Rating</h2>
+    <h2>Update Rating</h2>
 
-		<p>Current rating: {{request.Rating.score}}</p>
+    <p>
+        <strong>Recipe:</strong>
+        {{ rating.recipe.title }}
+    </p>
 
-		<form method="POST" enctype="multipart/form-data">
-			{% csrf_token %}
-			{{ form.as_p }}
-			<button type="submit">Save</button>
-		</form>
+    <p>
+        <strong>Current rating:</strong>
+        {{ rating.score }}/5
+    </p>
 
-		<form method="GET">
-			<button type="submit", formaction="{% url 'recipe_list' %}">Return Home</button>
-		</form>
+    <form method="POST">
+        {% csrf_token %}
 
-    {% endif %}
+        {{ form.as_p }}
 
-	<p>Please login to edit recipes</p>
+        <button type="submit">
+            Save Rating
+        </button>
+    </form>
 
-	<form method="GET">
-		<button type="submit", formaction="{% url 'log_auth' %}">Login/Signup</button>
-	</form>
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'recipe_detail' rating.recipe.pk %}"
+        >
+            Cancel
+        </button>
+    </form>
 
-</div>
+{% else %}
+
+    <p>Please login to edit your rating.</p>
+
+    <form method="GET">
+        <button
+            type="submit"
+            formaction="{% url 'log_auth' %}"
+        >
+            Login/Signup
+        </button>
+    </form>
+
+{% endif %}
 
 {% endblock %}

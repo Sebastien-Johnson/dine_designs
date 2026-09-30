@@ -73,6 +73,15 @@
             </form>
         </li>
 
+        {% if user.is_staff %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">
+                Admin Portal
+            </a>
+        </li>
+        
+    {% endif %}
+
 			{% else %}
 				<li><a class="nav-item nav-link active" href="{% url 'log_auth' %}">Login/Signup</a></li><br>
 			{% endif %}

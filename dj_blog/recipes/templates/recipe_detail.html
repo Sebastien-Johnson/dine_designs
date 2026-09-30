@@ -45,13 +45,38 @@
   	<p>Published: {{ recipe.published }}</p>
   	<p>Rating: {{ recipe.get_rating }}/5.0 ☆ ( {{ recipe.get_review_count }} )</p>
 
-	{% if request.user not in recipe.match_reviewer %}
+	{% if request.user.is_authenticated %}
 
-		<form method="GET">
-			<button type="submit", formaction="{% url 'recipe_rating' recipe.pk %}">Rate Recipe</button>
-		</form>
+		{% if user_rating %}
 
-  	{% endif %}
+			<p>
+				Your rating:
+				<strong>{{ user_rating.score }}/5 ★</strong>
+			</p>
+
+			<form method="GET">
+				<button
+					type="submit"
+					formaction="{% url 'rating_update' user_rating.pk %}"
+				>
+					Update Rating
+				</button>
+			</form>
+
+		{% else %}
+
+			<form method="GET">
+				<button
+					type="submit"
+					formaction="{% url 'recipe_rating' recipe.pk %}"
+				>
+					Rate Recipe
+				</button>
+			</form>
+
+		{% endif %}
+
+	{% endif %}
 
 	<div class="recipe-info">
 
@@ -62,26 +87,37 @@
         </span>
     {% endif %}
 	</br>
-    <span>
-        <strong>Serves:</strong>
-        {{ recipe.serves }}
-    </span>
+    
 
 	</div>
 
-	<h3>Macros: </h3>
-	{{ recipe.compile_macros }} 
-	Proteins: {{ recipe.proteins }} g <br>
-	Carbs: {{ recipe.carbs }} g <br>
-	Fats: {{ recipe.fats }} g <br>
-	Calories: {{ recipe.calories}} cal <br>
+	<h3>Nutrition</h3>
+	<span>
+        <strong>Serves:</strong>
+        {{ recipe.serves }}
+    </span>
+	<p>
+		<strong>Total Macros:</strong><br>
+		Calories: {{ recipe.total_calories }} cal<br>
+		Protein: {{ recipe.total_proteins }} g<br>
+		Carbs: {{ recipe.total_carbs }} g<br>
+		Fat: {{ recipe.total_fats }} g
+	</p>
+
+	<p>
+		<strong>Per serving:</strong><br>
+		Calories: {{ recipe.calories_per_serving }} cal<br>
+		Protein: {{ recipe.proteins_per_serving }} g<br>
+		Carbs: {{ recipe.carbs_per_serving }} g<br>
+		Fat: {{ recipe.fats_per_serving }} g
+	</p>
 
   	<div id="ingredients">
         {% include "partials/ingredients.html" with foods=recipe.foods.all %}
     </div>
 	
 
-	<h2>Instructions</h2>
+	<h3>Instructions</h3>
 	{% for step in recipe.instructions.all %}
 
 		<div class="card mb-3">

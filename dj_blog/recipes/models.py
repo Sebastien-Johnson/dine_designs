@@ -38,33 +38,54 @@ class Recipe(models.Model):
     def __str__(self):
         return f"{self.title}, by {str(self.author)} ({self.average_rating()}/5★)"
 
-    def match_reviewer(self):
-        return self.get_all_reviewers()
-    
-    def get_all_reviewers(self):
-        reviewers = []
-        for rating in self.ratings.all():
-            reviewers.append(rating)
-        return reviewers
-
-    def get_rating(self):
-        return self.average_rating()
-
     def average_rating(self):
         return Rating.objects.filter(recipe=self).aggregate(Avg("score"))["score__avg"] or 0
 
     def get_review_count(self):
-        return len(self.get_all_reviewers())
+        return Rating.objects.filter(recipe=self).count()
 
-    def compile_macros(self):
-        ing = self.ingredients.all()
-        for i in ing:
-            self.proteins += i.proteins
-            self.carbs += i.carbs
-            self.fats += i.fats
-            self.calories += i.calories
+    @property
+    def total_proteins(self):
+        return round(
+            sum(i.proteins for i in self.ingredients.all()),
+            1
+        )
 
-        return ""
+    @property
+    def total_carbs(self):
+        return round(
+            sum(i.carbs for i in self.ingredients.all()),
+            1
+        )
+
+    @property
+    def total_fats(self):
+        return round(
+            sum(i.fats for i in self.ingredients.all()),
+            1
+        )
+
+    @property
+    def total_calories(self):
+        return round(
+            sum(i.calories for i in self.ingredients.all()),
+            1
+        )
+
+    @property
+    def calories_per_serving(self):
+        if not self.serves:
+            return 0
+
+        return round(self.total_calories / self.serves, 1)
+
+
+    @property
+    def proteins_per_serving(self):
+        if not self.serves:
+            return 0
+
+        return round(self.total_proteins / self.serves, 1)
 
     @property
     def cooking_time_display(self):
@@ -90,6 +111,15 @@ class Recipe(models.Model):
             )
 
         return " ".join(parts)
+
+    def get_user_rating(self, user):
+        if not user.is_authenticated:
+            return None
+
+        return Rating.objects.filter(
+            recipe=self,
+            user=user
+        ).first()
 
     
 class Ingredient(models.Model):
