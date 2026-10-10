@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import CreateView, UpdateView, DetailView
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView, LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CustomUserCreationForm, CustomUserChangeForm, ProfilePageForm
 from .models import Profile, CustomUser
 
@@ -12,7 +13,8 @@ class SignUpView(CreateView):
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
 
-class EditAccountView(UpdateView):
+
+class EditAccountView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     form_class = CustomUserChangeForm
     success_url = reverse_lazy("recipe_list")
@@ -41,7 +43,7 @@ class ShowProfilePageView(DetailView):
         context["page_user"] = page_user
         return context
     
-class EditProfilePageView(UpdateView):
+class EditProfilePageView(LoginRequiredMixin,UpdateView):
     model = Profile
     form_class = ProfilePageForm
     template_name = "registration/edit_profile_page.html"

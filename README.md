@@ -43,6 +43,10 @@ python manage.py createsuperuser
 ```
 docker exec -ti dd_postgress_db psql -U {username} -d dev_database
 ```
+- Running tests 
+```
+docker exec -it dd_web_app python manage.py test {path to 'tests' dir}
+```
 
 ## Usage
 - View new posts on home feed

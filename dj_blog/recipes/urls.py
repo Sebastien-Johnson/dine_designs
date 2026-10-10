@@ -6,7 +6,6 @@ urlpatterns = [
     path("<int:pk>/recipe_edit/", RecipeEditView.as_view(), name="recipe_edit"),
     path("<int:pk>/recipe_confirm_delete/", RecipeDeleteView.as_view(), name="recipe_confirm_delete"),
     path("<int:pk>/comment", AddCommentView.as_view(), name="add_comment"),  
-   
 ]
 
 htmx_urlpatterns = [

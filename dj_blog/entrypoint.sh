@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo "Running migrations..."
+python manage.py makemigrations accounts recipes
 python manage.py migrate
 
 echo "Starting server..."

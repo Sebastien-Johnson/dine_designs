@@ -10,3 +10,5 @@ python-dotenv==1.2.3
 requests==2.34.2
 sqlparse==0.5.5
 urllib3==2.7.0
+factory_boy 
+Faker
