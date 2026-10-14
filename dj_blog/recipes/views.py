@@ -5,6 +5,7 @@ from .models import Recipe, Comment, Rating, Food, Ingredient, Instruction
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic.list import ListView
@@ -127,11 +128,14 @@ class RecipeCreateView(CreateView):
 
         return response
 
-class RecipeEditView(UpdateView):
+class RecipeEditView(LoginRequiredMixin, UpdateView):
     model = Recipe
     form_class = CreateRecipe
     success_url = reverse_lazy("recipe_list")
     template_name = "recipe_edit.html"
+
+    def get_queryset(self):
+        return Recipe.objects.filter(author=self.request.user)
 
     def form_valid(self, form):
         # Saves existing form field values
@@ -179,10 +183,13 @@ class RecipeEditView(UpdateView):
 
         return response
 
-class RecipeDeleteView(DeleteView):
+class RecipeDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipe
     success_url = reverse_lazy("recipe_list")
     template_name = "recipe_confirm_delete.html"
+
+    def get_queryset(self):
+        return Recipe.objects.filter(author=self.request.user)
 
     def delete_recipe(request, id):
         recipe = get_object_or_404(Recipe, pk=id)
@@ -203,7 +210,7 @@ class AddCommentView(CreateView):
     success_url = reverse_lazy("recipe_list")
 
     def form_valid(self, form):
-        form.instance.post_id = self.kwargs["pk"]
+        form.instance.recipe_id = self.kwargs["pk"]
         form.instance.name = self.request.user
         return super().form_valid(form)
 
