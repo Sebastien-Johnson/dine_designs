@@ -2,7 +2,6 @@ from django.urls import path
 from django.views.generic.base import TemplateView 
 from .views import *
 
-
 urlpatterns = [
     path("signup/", SignUpView.as_view(), name="signup"),
     path("<int:pk>/edit_account/", EditAccountView.as_view(), name="edit_account"),

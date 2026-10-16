@@ -1,24 +1,7 @@
-
 from datetime import timedelta
-
 from django.test import TestCase
-
-from recipes.models import (
-    Food,
-    Ingredient,
-    Instruction,
-    Rating,
-    Recipe,
-)
-from recipes.tests.factories import (
-    UserFactory,
-    FoodFactory,
-    RecipeFactory,
-    IngredientFactory,
-    RatingFactory,
-    CommentFactory,
-    InstructionFactory,
-)
+from recipes.models import *
+from recipes.tests.factories import *
 
 
 class FoodModelTests(TestCase):

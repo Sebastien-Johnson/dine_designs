@@ -1,26 +1,8 @@
-
 from datetime import date
-
 from django.test import TestCase
 from django.urls import reverse
-
-from recipes.models import (
-    Recipe,
-    Food,
-    Ingredient,
-    Rating,
-    Comment,
-    Instruction,
-)
-from recipes.tests.factories import (
-    UserFactory,
-    RecipeFactory,
-    FoodFactory,
-    IngredientFactory,
-    RatingFactory,
-    CommentFactory,
-    InstructionFactory,
-)
+from recipes.models import Recipe, Ingredient, Rating, Comment
+from recipes.tests.factories import *
 
 
 class RecipeListViewTests(TestCase):

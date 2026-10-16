@@ -1,16 +1,8 @@
 import factory
 from datetime import timedelta
 from django.utils import timezone
-
 from accounts.models import CustomUser
-from recipes.models import (
-    Recipe,
-    Food,
-    Ingredient,
-    Rating,
-    Comment,
-    Instruction,
-)
+from recipes.models import *
 
 
 class UserFactory(factory.django.DjangoModelFactory):

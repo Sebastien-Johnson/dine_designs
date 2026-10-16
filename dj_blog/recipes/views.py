@@ -1,6 +1,4 @@
 import requests
-
-
 from .models import Recipe, Comment, Rating, Food, Ingredient, Instruction
 from .forms import CreateRecipe, AddComment, AddRating
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
